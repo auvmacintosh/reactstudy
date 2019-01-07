@@ -1,0 +1,31 @@
+.container {
+    border: 1px solid black;
+    border-radius: 0.3rem;
+    margin: 0.8rem 0 0 1.2rem;
+    padding: 0.3rem;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form input {
+    border-style: none;
+}
+
+.form div {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 0.3rem;
+}
+
+.form button {
+    background: none;
+    border-width: 1px 0 0 1px;
+    border-style: solid;
+    border-color: black;
+    border-top-left-radius: 0.3rem;
+    margin-right: -0.3rem;
+    margin-bottom: -0.3rem;
+}

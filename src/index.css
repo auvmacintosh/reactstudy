@@ -1,14 +1,33 @@
-body {
-  margin: 0;
-  padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+:root {
+  box-sizing: border-box; /*box尺寸，就是width和height，包含border*/
+  --sidebar-width: 1.8rem; /*隐藏了sidebar，这1.8是留给handle的*/
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+@media (min-width: 800px) {
+  :root {
+    --sidebar-width: 12rem; /*完全显示sidebar*/
+  }
 }
+
+*, ::before, ::after {
+  box-sizing: inherit;
+}
+
+body {
+  font-family: arial, SimHei, STHeiti, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
+/*body {*/
+  /*margin: 0;*/
+  /*padding: 0;*/
+  /*font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",*/
+    /*"Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",*/
+    /*sans-serif;*/
+  /*-webkit-font-smoothing: antialiased;*/
+  /*-moz-osx-font-smoothing: grayscale;*/
+/*}*/
+
+/*code {*/
+  /*font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",*/
+    /*monospace;*/
+/*}*/
