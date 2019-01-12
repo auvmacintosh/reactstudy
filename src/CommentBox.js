@@ -8,23 +8,18 @@ import style from './CommentBox.module.css'
 class CommentBox extends Component {
     constructor(props) {
         super(props);
+        this.state = {comments: data.comments};
     }
 
-    renderComments(comments) { // 为什么这么写就不行
-        comments.map((comment) => {
-            return (
-                <Comment comment={comment} />
-            )
-        });
-    }
+    appendComment = (newComment) => this.setState({comment: this.state.comments.push(newComment)});
 
     render() {
         return (
             <div className={style.container}>
-                <div className={style.brace} />
-                <Post post={data.post} comments={data.comments} />
-                {data.comments.map((comment)=>{return <Comment comment={comment}/>})}
-                <CreateComment/>
+                <div className={style.brace}/>
+                <Post post={data.post} commentsLength={this.state.comments.length}/>
+                {this.state.comments.map(comment => <Comment comment={comment}/>)}
+                <CreateComment appendComment={this.appendComment}/>
             </div>
         )
     }
