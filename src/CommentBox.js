@@ -11,7 +11,9 @@ class CommentBox extends Component {
         this.state = {comments: data.comments};
     }
 
-    appendComment = (newComment) => this.setState({comment: this.state.comments.push(newComment)});
+    appendComment = (newComment) => {
+        this.setState(prevState => ({comments: prevState.comments.concat(newComment)}));
+    }
 
     render() {
         return (
