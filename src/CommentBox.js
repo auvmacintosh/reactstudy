@@ -12,6 +12,9 @@ class CommentBox extends Component {
             post: data.post,
             comments: data.comments
         };
+        for(let item in this.state) {
+            console.log(item);
+        }
     }
 
     // 使用function版的setState可以保证synchronize，而且可以使用prevState。
@@ -20,12 +23,11 @@ class CommentBox extends Component {
     }
 
     render() {
+        const {id, user, content} = this.state.post;
         return (
             <div className={style.container}>
                 <div className={style.brace}/>
-                <Post key={this.state.post.id}
-                      user={this.state.post.user}
-                      content={this.state.post.content}
+                <Post key={id} user={user} content={content}
                       commentsLength={this.state.comments.length}/>
                 {/*array里的Component要有key attribute，不然报警*/}
                 {this.state.comments.map(
