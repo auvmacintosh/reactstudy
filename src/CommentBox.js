@@ -8,9 +8,13 @@ import style from './CommentBox.module.css'
 class CommentBox extends Component {
     constructor(props) {
         super(props);
-        this.state = {comments: data.comments};
+        this.state = {
+            post: data.post,
+            comments: data.comments
+        };
     }
 
+    // 使用function版的setState可以保证synchronize，而且可以使用prevState。
     appendComment = (newComment) => {
         this.setState(prevState => ({comments: prevState.comments.concat(newComment)}));
     }
@@ -19,8 +23,15 @@ class CommentBox extends Component {
         return (
             <div className={style.container}>
                 <div className={style.brace}/>
-                <Post post={data.post} commentsLength={this.state.comments.length}/>
-                {this.state.comments.map(comment => <Comment comment={comment}/>)}
+                <Post key={this.state.post.id}
+                      user={this.state.post.user}
+                      content={this.state.post.content}
+                      commentsLength={this.state.comments.length}/>
+                {/*array里的Component要有key attribute，不然报警*/}
+                {this.state.comments.map(
+                    ({id, user, content}) =>
+                        <Comment key={id} user={user} content={content}/>
+                )}
                 <CreateComment appendComment={this.appendComment}/>
             </div>
         )

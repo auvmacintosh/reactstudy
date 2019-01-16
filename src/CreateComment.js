@@ -4,29 +4,19 @@ import style from './CreateComment.module.css';
 class CreateComment extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            content: '',
-            id: 0,
-            user: ''
-        }
+        this.state = {id: 0, user: '', content: ''}
     }
 
-    handleUserChange = (e) => this.setState({user: e.target.value});
+    // 用target.name处理所有input，这样就不用每个input一个handler了。
+    // handleChange = (e) => this.setState({[e.target.name]: e.target.value});
 
-    handleContentChange = (e) => this.setState({content: e.target.value});
+    // destructuring parameter
+    handleChange = ({target}) => this.setState({[target.name]: target.value});
 
     handleSubmit = (e) => {
         e.preventDefault();
-        this.props.appendComment({
-            content: this.state.content,
-            id: this.state.id,
-            user: this.state.user
-        });
-        this.setState({
-            content: '',
-            id: 0,
-            user: ''
-        });
+        this.props.appendComment({...this.state}); // spread attribute
+        this.setState({id: 0, user: '', content: ''});
     }
 
     render() {
@@ -34,17 +24,17 @@ class CreateComment extends Component {
             <div className={style.container}>
                 <form className={style.form} onSubmit={this.handleSubmit}>
                     <input
+                        type="text"
                         name='user'
                         value={this.state.user}
-                        onChange={this.handleUserChange}
-                        type="text"
+                        onChange={this.handleChange}
                         placeholder="Your name ..."
                     />
                     <input
+                        type="text"
                         name='content'
                         value={this.state.content}
-                        onChange={this.handleContentChange}
-                        type="text"
+                        onChange={this.handleChange}
                         placeholder="Comment here ..."
                     />
                     <div>
