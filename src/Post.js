@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import style from './Post.module.css';
 
 // default parameter make withData decouple with data structure
-const Post = ({user, content}) => (
+const Post = ({user = " ", content = ""}) => (
     <div className={style.container}>
         <div className={style.title}>
             <div className={style.user}>

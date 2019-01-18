@@ -14,7 +14,6 @@ class Comment extends Component {
 }
 
 Comment.propTypes = {
-    id: PropTypes.number,
     user: PropTypes.string,
     content: PropTypes.string
 }
