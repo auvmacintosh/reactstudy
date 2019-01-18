@@ -1,0 +1,13 @@
+{
+  "id": 0,
+  "user": "Wang Bo",
+  "content": "What we hope ever to do with ease, we must first learn to do with diligence. — Samuel Johnson",
+  "_links": {
+    "self": {
+      "href": "http://localhost:8080/api/posts/0"
+    },
+    "post": {
+      "href": "http://localhost:8080/api/posts/0"
+    }
+  }
+}
