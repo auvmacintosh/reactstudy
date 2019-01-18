@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import Post from './Post';
+import PostWithData from './Post';
 import Comment from './Comment';
 import CreateComment from './CreateComment';
 import data from './data';
@@ -23,7 +23,7 @@ class CommentBox extends Component {
         return (
             <div className={style.container}>
                 <div className={style.brace}/>
-                <Post/>
+                <PostWithData/>
                 {/*array里的Component要有key attribute，不然报警*/}
                 {this.state.comments.map(
                     ({id, user, content}) =>

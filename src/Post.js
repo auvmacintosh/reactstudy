@@ -2,6 +2,19 @@ import React, {Component} from 'react';
 import style from './Post.module.css';
 import PropTypes from 'prop-types';
 
+const Post = ({id, user, content}) => (
+    <div className={style.container}>
+        <div className={style.title}>
+            <div className={style.user}>
+                <a href={user}>{user.split(' ')[0]} posted</a></div>
+            <div className={style.comment_count}>5 comments</div>
+        </div>
+        <div className={style.content}>
+            <div>{content}</div>
+        </div>
+    </div>
+)
+
 const withData = url => MyComponent => {
     return class extends Component {
         constructor(props) {
@@ -10,7 +23,7 @@ const withData = url => MyComponent => {
         }
 
         componentDidMount() {
-            fetch('http://localhost:3000/staticapi/posts.json')
+            fetch(url)
                 .then(response => response.json())
                 .then(o => this.setState(o._embedded.posts[0]))
         }
@@ -21,7 +34,9 @@ const withData = url => MyComponent => {
     }
 }
 
-class Post extends Component {
+const PostWithData = withData('http://localhost:3000/staticapi/posts.json')(Post);
+
+class Post1 extends Component {
     constructor(props) {
         super(props);
         this.state = {id: null, user: " ", content: null};
@@ -56,4 +71,4 @@ Post.propTypes = {
     commentsLength: PropTypes.number,
 }
 
-export default Post;
+export default PostWithData;
