@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import Post from './Post';
-import CommentList from './CommentList';
+import CommentBox from './CommentBox';
 import CreateComment from './CreateComment';
 import withData from './withData'
 import style from './App.module.css'
@@ -16,14 +16,14 @@ class App extends Component {
             withData('http://localhost:3000/staticapi/post.json')(Post);
 
         const CommentListWithData =
-            withData('http://localhost:3000/staticapi/comments.json')(CommentList);
+            withData('http://localhost:3000/staticapi/comments.json')(CommentBox);
 
         return (
             <div className={style.container}>
                 <div className={style.brace}/>
                 <PostWithData />
                 <CommentListWithData />
-                <CreateComment appendComment={this.appendComment}/>
+                {/*<CreateComment appendComment={this.appendComment}/>*/}
             </div>
         )
     }
