@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import style from './Post.module.css';
 
-// default parameter make withData decouple with data structure
+// default parameter make withHalJsonResource decouple with data structure
 const Post = ({user = " ", content = ""}) => (
     <div className={style.container}>
         <div className={style.title}>

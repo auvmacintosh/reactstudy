@@ -1,0 +1,92 @@
+{
+  "alps": {
+    "version": "1.0",
+    "descriptor": [
+      {
+        "id": "article-representation",
+        "href": "http://localhost:8080/api/profile/articles",
+        "descriptor": [
+          {
+            "name": "title",
+            "type": "SEMANTIC"
+          },
+          {
+            "name": "publishTime",
+            "type": "SEMANTIC"
+          },
+          {
+            "name": "lmt",
+            "type": "SEMANTIC"
+          },
+          {
+            "name": "categories",
+            "type": "SAFE",
+            "rt": "http://localhost:8080/api/profile/categories#category-representation"
+          }
+        ]
+      },
+      {
+        "id": "get-articles",
+        "name": "articles",
+        "type": "SAFE",
+        "descriptor": [
+          {
+            "name": "page",
+            "type": "SEMANTIC",
+            "doc": {
+              "format": "TEXT",
+              "value": "The page to return."
+            }
+          },
+          {
+            "name": "size",
+            "type": "SEMANTIC",
+            "doc": {
+              "format": "TEXT",
+              "value": "The size of the page to return."
+            }
+          },
+          {
+            "name": "sort",
+            "type": "SEMANTIC",
+            "doc": {
+              "format": "TEXT",
+              "value": "The sorting criteria to use to calculate the content of the page."
+            }
+          }
+        ],
+        "rt": "#article-representation"
+      },
+      {
+        "id": "create-articles",
+        "name": "articles",
+        "type": "UNSAFE",
+        "rt": "#article-representation"
+      },
+      {
+        "id": "delete-article",
+        "name": "article",
+        "type": "IDEMPOTENT",
+        "rt": "#article-representation"
+      },
+      {
+        "id": "get-article",
+        "name": "article",
+        "type": "SAFE",
+        "rt": "#article-representation"
+      },
+      {
+        "id": "update-article",
+        "name": "article",
+        "type": "IDEMPOTENT",
+        "rt": "#article-representation"
+      },
+      {
+        "id": "patch-article",
+        "name": "article",
+        "type": "UNSAFE",
+        "rt": "#article-representation"
+      }
+    ]
+  }
+}

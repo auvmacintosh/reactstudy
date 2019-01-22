@@ -4,7 +4,7 @@ import style from './CreateComment.module.css';
 class CreateComment extends Component {
     constructor(props) {
         super(props);
-        this.state = {id: 0, user: '', content: ''}
+        this.state = {id: '5', user: '', content: ''}
     }
 
     // 用target.name处理所有input，这样就不用每个input一个handler了。
@@ -15,8 +15,8 @@ class CreateComment extends Component {
 
     handleSubmit = (e) => {
         e.preventDefault();
-        this.props.appendComment({...this.state}); // spread attribute
-        this.setState({id: 0, user: '', content: ''});
+        this.props.postUrl({...this.state}); // spread attribute
+        this.setState({id: '5', user: '', content: ''});
     }
 
     render() {

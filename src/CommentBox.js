@@ -18,14 +18,14 @@ import CreateComment from "./CreateComment"
 // }
 
 // If <> does not work or is not supported by your IDE, you can use <React.Fragment> instead.
-const CommentBox = ({_embedded: {comments = []} = {comment: []}}) => {
+const CommentBox = ({_embedded: {comments = []} = {comment: []}, postUrl}) => {
     return (
         <>
             {comments.map(
                 ({id, user, content}) =>
                     <Comment key={id} user={user} content={content}/>
             )}
-            <CreateComment/>
+            <CreateComment postUrl={postUrl}/>
         </>
     )
 }
