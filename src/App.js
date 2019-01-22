@@ -4,6 +4,7 @@ import CommentBox from './CommentBox';
 // import CreateComment from './CreateComment';
 import withHalJsonResource from './withHalJsonResource'
 import style from './App.module.css'
+import Login from './Login'
 
 class App extends Component {
     // 使用function版的setState可以保证synchronize，而且可以使用prevState。
@@ -24,6 +25,7 @@ class App extends Component {
                 <PostWithData />
                 <CommentListWithData />
                 {/*<CreateComment appendComment={this.appendComment}/>*/}
+                <Login></Login>
             </div>
         )
     }
