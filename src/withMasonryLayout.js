@@ -1,6 +1,6 @@
 import React from 'react';
 
-const withMasonryLayout = apiUrl => serviceFolder => MyComponent => {
+const withMasonryLayout =  MyComponent => {
 
 }
 

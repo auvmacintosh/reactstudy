@@ -1,7 +1,7 @@
 import React from 'react';
 
 // 这个类所有http方法的返回都是单个resource object，也就是x。
-const withHalJsonResource = apiUrl => serviceFolder => MyComponent => {
+const withHalJsonResource = apiUrl => MyComponent => {
     return class extends React.Component {
         constructor(props) {
             super(props);
@@ -9,7 +9,7 @@ const withHalJsonResource = apiUrl => serviceFolder => MyComponent => {
         }
 
         httpGet = (id) => {
-            fetch(apiUrl + '/' + serviceFolder + '/' + id)
+            fetch(apiUrl +  '/' + id)
                 .then(response => response.json())
                 .then(obj => (this.setState({x: obj})))
         };
