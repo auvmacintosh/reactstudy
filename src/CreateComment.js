@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
+import React from 'react';
 import style from './CreateComment.module.css';
 
-class CreateComment extends Component {
+class CreateComment extends React.Component {
     constructor(props) {
         super(props);
         this.state = {id: '5', user: '', content: ''}
@@ -15,7 +15,7 @@ class CreateComment extends Component {
 
     handleSubmit = (e) => {
         e.preventDefault();
-        this.props.postUrl({...this.state}); // spread attribute
+        this.props.httpPost({...this.state}); // spread attribute
         this.setState({id: '5', user: '', content: ''});
     }
 

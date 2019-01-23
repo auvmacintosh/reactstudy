@@ -1,8 +1,8 @@
-import React, {Component} from 'react';
+import React from 'react';
 import style from './Comment.module.css';
 import PropTypes from 'prop-types';
 
-class Comment extends Component {
+class Comment extends React.Component {
     render() {
         return (
             <div className={style.container}>

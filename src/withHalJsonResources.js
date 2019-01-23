@@ -1,17 +1,17 @@
 import React from 'react';
 
-// 这个类所有http方法的返回都是单个resource object，也就是x。
-const withHalJsonResource = apiUrl => serviceFolder => MyComponent => {
+// 这个类所有http方法的返回都是resource数组，也就是xs。
+const withHalJsonResources = apiUrl => serviceFolder => MyComponent => {
     return class extends React.Component {
         constructor(props) {
             super(props);
-            this.state = {x: {}};
+            this.state = {xs: []};
         }
 
-        httpGet = (id) => {
-            fetch(apiUrl + '/' + serviceFolder + '/' + id)
+        httpGet = () => {
+            fetch(apiUrl + '/' + serviceFolder)
                 .then(response => response.json())
-                .then(obj => (this.setState({x: obj})))
+                .then(obj => (this.setState({xs: obj._embedded[serviceFolder]})))
         };
 
         httpPost = (newComment) => {
@@ -33,9 +33,9 @@ const withHalJsonResource = apiUrl => serviceFolder => MyComponent => {
                 httpPost={this.httpPost}
                 httpPut={this.httpPut}
                 httpDelete={this.httpDelete}
-                x={this.state.x}/>
+                xs={this.state.xs}/>
         }
     }
 };
 
-export default withHalJsonResource;
+export default withHalJsonResources;

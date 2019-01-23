@@ -1,12 +1,12 @@
-import React, {Component} from 'react';
+import React from 'react';
 import Post from './Post';
 import CommentBox from './CommentBox';
-// import CreateComment from './CreateComment';
-import withHalJsonResource from './withHalJsonResource'
+import withHalJsonResources from './withHalJsonResources'
 import style from './App.module.css'
 import Login from './Login'
+import RandomHeightBlock from "./RandomHeightBlock";
 
-class App extends Component {
+class App extends React.Component {
     // 使用function版的setState可以保证synchronize，而且可以使用prevState。
     // appendComment = (newComment) => {
     //     this.setState(prevState => ({comments: prevState.comments.concat(newComment)}));
@@ -14,19 +14,23 @@ class App extends Component {
 
     render() {
         const PostWithData =
-            withHalJsonResource('http://localhost:3000/staticapi')('post')(Post);
+            withHalJsonResources('http://localhost:3000/staticapi')('post')(Post);
 
         const CommentListWithData =
-            withHalJsonResource('http://localhost:3000/staticapi')('comments')(CommentBox);
+            withHalJsonResources('http://localhost:3000/staticapi')('comments')(CommentBox);
+
+        // return (
+        //     <div className={style.container}>
+        //         <div className={style.brace}/>
+        //         <PostWithData />
+        //         <CommentListWithData />
+        //     </div>
+        // )
+
+        // return <Login></Login>
 
         return (
-            <div className={style.container}>
-                <div className={style.brace}/>
-                <PostWithData />
-                <CommentListWithData />
-                {/*<CreateComment appendComment={this.appendComment}/>*/}
-                <Login></Login>
-            </div>
+            <RandomHeightBlock id={1} width={'20rem'}/>
         )
     }
 }
