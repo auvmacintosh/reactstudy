@@ -15,7 +15,7 @@ class CreateComment extends React.Component {
 
     handleSubmit = (e) => {
         e.preventDefault();
-        this.props.httpPost({...this.state}); // spread attribute
+        this.props.postX({...this.state}); // spread attribute
         this.setState({id: '5', user: '', content: ''});
     }
 

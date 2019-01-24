@@ -1,10 +1,11 @@
 import React from 'react';
 import Post from './Post';
 import CommentBox from './CommentBox';
-import withHalJsonResources from './withHalJsonResources'
+import withRestResources from './withRestResources'
 import style from './App.module.css'
 import Login from './Login'
-import RandomHeightBlock from "./RandomHeightBlock";
+import RandomColorBlock from "./RandomColorBlock";
+import withMasonryLayout from "./withMasonryLayout";
 
 class App extends React.Component {
     // 使用function版的setState可以保证synchronize，而且可以使用prevState。
@@ -14,9 +15,9 @@ class App extends React.Component {
 
     render() {
         // const PostWithData =
-        //     withHalJsonResources('http://localhost:3000/staticapi/post')(Post);
+        //     withRestResources('http://localhost:3000/staticapi/post')(Post);
         // const CommentListWithData =
-        //     withHalJsonResources('http://localhost:3000/staticapi/comments')(CommentBox);
+        //     withRestResources('http://localhost:3000/staticapi/comments')(CommentBox);
         // return (
         //     <div className={style.container}>
         //         <div className={style.brace}/>
@@ -24,11 +25,15 @@ class App extends React.Component {
         //         <CommentListWithData />
         //     </div>
         // )
-
+        //
         // return <Login></Login>
 
+        const BlockWithMasonryWithRest =
+            withRestResources("http://localhost:8080/api/articles")(
+                withMasonryLayout(RandomColorBlock)
+            );
         return (
-            <RandomHeightBlock id={1} width={'20rem'}/>
+            <BlockWithMasonryWithRest/>
         )
     }
 }

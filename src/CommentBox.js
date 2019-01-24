@@ -7,15 +7,21 @@ import CreateComment from "./CreateComment"
 // array里的Component要有key attribute，不然报警
 
 class CommentBox extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {xs: []};
+    }
+
     componentDidMount() {
-        this.props.httpGet();
+        this.props.getXs().then(response => this.setState({xs: response.xs}));
+        // this.props.getXs().then(response => this.setState(response)); // 这个state还包含page，如果page没用，就别放state里了
     }
 
     render() {
         let {xs, httpPost} = this.props;
         return (
             <>
-                {xs.map(
+                {this.state.xs.map(
                     ({id, user, content}) =>
                         <Comment key={id} user={user} content={content}/>
                 )}
@@ -50,11 +56,7 @@ class CommentBox extends React.Component {
 // }
 
 CommentBox.propTypes = {
-    xs: PropTypes.arrayOf(PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        user: PropTypes.string.isRequired,
-        content: PropTypes.string.isRequired
-    }))
+    getXs: PropTypes.func.isRequired,
 }
 
 export default CommentBox;
