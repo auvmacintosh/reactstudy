@@ -7,41 +7,44 @@ const withMasonryLayout = Component => {
             super(props);
             this.columnNo = 3;
             this.allXs = []; // 一维数组，记录的是所有的xs
+            this.heightOfAllXs = [];
 
             this.layouts = {};
             this.layouts[this.columnNo] = {
                 indexOfLastX: '',
                 columnHeights: Array(this.columnNo).fill(0), // 一维数组，每列的高度。
-                columns: [...Array(this.columnNo)].map(()=>[]), // 二维数组，存的是每列包含的那部分xs
-            }
+                columns: [...Array(this.columnNo)].map(() => []), // 二维数组，存的是每列包含的那部分xs
+            };
 
             this.state = {
                 columns: this.layouts[this.columnNo].columns
             };
         }
 
-        appendX = (layout, x) => {
+        appendX = (allXs, layout, x) => {
+            allXs.push(x);
             let iMin = layout.columnHeights.indexOf(Math.min(...layout.columnHeights));
             layout.columns[iMin].push(x);
-        }
+        };
 
-        updateColumnHeights = (layout, heightOfX) => {
+        updateHeights = (heightOfAllXs, layout, heightOfX) => {
+            heightOfAllXs.push(heightOfX);
             let iMin = layout.columnHeights.indexOf(Math.min(...layout.columnHeights));
             layout.columnHeights[iMin] += heightOfX;
-        }
+        };
 
         handleWindowResize = () => {
             console.log("resize")
-        }
+        };
 
         handleScrolledToBottom = () => {
-        }
+        };
 
         componentDidMount() {
             this.props.getXs().then(response => {
                 this.allXs.push(response.xs);
                 response.xs.forEach((x) => {
-                    this.appendX(this.layouts[this.columnNo], x);
+                    this.appendX(this.allXs, this.layouts[this.columnNo], x);
                     this.setState(prevState => prevState);
                 });
             });
@@ -69,7 +72,7 @@ const withMasonryLayout = Component => {
                                     }}>
                                         {column.map(
                                             (x) => <Component id={x.title} width={'20rem'}
-                                                              updateColumnHeights={this.updateColumnHeights.bind(this, this.layouts[[this.columnNo]])}/>
+                                                              updateHeights={this.updateHeights.bind(this, this.heightOfAllXs, this.layouts[[this.columnNo]])}/>
                                         )}
                                     </div>
                                 )
@@ -86,6 +89,6 @@ const withMasonryLayout = Component => {
     };
 
     return ComponentWithMasonryLayout;
-}
+};
 
 export default withMasonryLayout;
