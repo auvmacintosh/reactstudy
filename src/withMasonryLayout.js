@@ -5,30 +5,29 @@ const withMasonryLayout = Component => {
     class ComponentWithMasonryLayout extends React.Component {
         constructor(props) {
             super(props);
-
             this.columnNo = 3;
             this.allXs = []; // 一维数组，记录的是所有的xs
-            this.columnHeights = new Array(this.columnNo).fill(0); // 一维数组，每列的高度。
+
+            this.layouts = {};
+            this.layouts[this.columnNo] = {
+                indexOfLastX: '',
+                columnHeights: Array(this.columnNo).fill(0), // 一维数组，每列的高度。
+                columns: [...Array(this.columnNo)].map(()=>[]), // 二维数组，存的是每列包含的那部分xs
+            }
+
             this.state = {
-                columns: new Array(this.columnNo).fill([]) // 二维数组，存的是每列包含的那部分xs
+                columns: this.layouts[this.columnNo].columns
             };
         }
 
-        appendX = (x, columnHeights) => {
-            this.setState((prevState) => {
-                let newColumnXs = new Array(columnHeights.length);
-                let iMin = columnHeights.indexOf(Math.min(...columnHeights));
-                console.log(columnHeights)
-                for (let i = 0; i < columnHeights.length; i++) {
-                    newColumnXs[i] = (i === iMin) ? prevState.columns[i].concat(x) : prevState.columns[i];
-                }
-                return {columns: newColumnXs};
-            })
+        appendX = (layout, x) => {
+            let iMin = layout.columnHeights.indexOf(Math.min(...layout.columnHeights));
+            layout.columns[iMin].push(x);
         }
 
-        updateColumnHeights = (xHeight) => {
-            let iMin = this.columnHeights.indexOf(Math.min(...this.columnHeights));
-            this.columnHeights[iMin] = this.columnHeights[iMin] + xHeight;
+        updateColumnHeights = (layout, heightOfX) => {
+            let iMin = layout.columnHeights.indexOf(Math.min(...layout.columnHeights));
+            layout.columnHeights[iMin] += heightOfX;
         }
 
         handleWindowResize = () => {
@@ -40,10 +39,11 @@ const withMasonryLayout = Component => {
 
         componentDidMount() {
             this.props.getXs().then(response => {
-                this.allXs = this.allXs.concat(response.xs);
-                response.xs.map((x) => {
-                    this.appendX(x, this.columnHeights);
-                })
+                this.allXs.push(response.xs);
+                response.xs.forEach((x) => {
+                    this.appendX(this.layouts[this.columnNo], x);
+                    this.setState(prevState => prevState);
+                });
             });
             window.addEventListener('resize', this.handleWindowResize)
         }
@@ -68,7 +68,8 @@ const withMasonryLayout = Component => {
                                         width: '20rem',
                                     }}>
                                         {column.map(
-                                            (x) => <Component id={x.title} width={'20rem'} updateColumnHeights={this.updateColumnHeights}/>
+                                            (x) => <Component id={x.title} width={'20rem'}
+                                                              updateColumnHeights={this.updateColumnHeights.bind(this, this.layouts[[this.columnNo]])}/>
                                         )}
                                     </div>
                                 )
