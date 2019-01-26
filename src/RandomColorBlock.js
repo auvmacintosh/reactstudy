@@ -24,22 +24,23 @@ class RandomColorBlock extends React.Component {
                 width: this.props.width,
                 height: this.props.height + 'rem',
                 background: this.getRandomColor(),
-                fontSize: '5rem',
+                fontSize: '2rem',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
             }}
                 ref={ (divElement) => this.divElement = divElement}
             >
-                {this.props.id}
+                {this.props.indexOfAllXs} {this.props.content}
             </div>
         )
     }
 }
 
-// 调用方法 <RandomColorBlock id={1} width={'20rem'}/>
+// 调用方法 <RandomColorBlock content={1} width={'20rem'}/>
 RandomColorBlock.propTypes = {
-    id: PropTypes.string, // Parent 定义 Block里显示的内容
+    indexOfAllXs: PropTypes.number,
+    content: PropTypes.string, // Parent 定义 Block里显示的内容
     width: PropTypes.string, // Parent 定义 Block的宽度
     height: PropTypes.number, // Parent 定义 Block的高度
     updateHeights: PropTypes.func,

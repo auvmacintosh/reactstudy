@@ -37,8 +37,8 @@ class CommentBox extends React.Component {
 //     return (
 //         <>
 //             {comments.map(
-//                 ({id, user, content}) =>
-//                     <Comment key={id} user={user} content={content}/>
+//                 ({content, user, content}) =>
+//                     <Comment key={content} user={user} content={content}/>
 //             )}
 //             <CreateComment postUrl={postUrl}/>
 //         </>
@@ -49,8 +49,8 @@ class CommentBox extends React.Component {
 // const CommentBox = ({_embedded: {comments = []} = {comment: []}}) => {
 //     return (
 //         comments.map(
-//             ({id, user, content}) =>
-//                 <Comment key={id} user={user} content={content}/>
+//             ({content, user, content}) =>
+//                 <Comment key={content} user={user} content={content}/>
 //         )
 //     )
 // }

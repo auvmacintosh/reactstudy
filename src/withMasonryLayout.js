@@ -11,9 +11,9 @@ const withMasonryLayout = Component => {
 
             this.layouts = {};
             this.layouts[this.columnNo] = {
-                indexOfLastX: '',
+                indexOfLastX: -1,
                 columnHeights: Array(this.columnNo).fill(0), // 一维数组，每列的高度。
-                columns: [...Array(this.columnNo)].map(() => []), // 二维数组，存的是每列包含的那部分xs
+                columns: [...Array(this.columnNo)].map(() => []), // 二维数组，存的是每列包含的那部分xs的indexOfAllXs
             };
 
             this.state = {
@@ -22,9 +22,8 @@ const withMasonryLayout = Component => {
         }
 
         appendX = (allXs, layout, x) => {
-            allXs.push(x);
             let iMin = layout.columnHeights.indexOf(Math.min(...layout.columnHeights));
-            layout.columns[iMin].push(x);
+            layout.columns[iMin].push(allXs.push(x)-1);
         };
 
         updateHeights = (heightOfAllXs, layout, heightOfX) => {
@@ -42,7 +41,7 @@ const withMasonryLayout = Component => {
 
         componentDidMount() {
             this.props.getXs().then(response => {
-                this.allXs.push(response.xs);
+                // this.allXs.push(response.xs);
                 response.xs.forEach((x) => {
                     this.appendX(this.allXs, this.layouts[this.columnNo], x);
                     this.setState(prevState => prevState);
@@ -63,16 +62,18 @@ const withMasonryLayout = Component => {
                 }}>
                     {
                         this.state.columns.map(
-                            (column) => {
+                            (column, i) => {
                                 return (
-                                    <div style={{
+                                    <div key={i} style={{
                                         display: 'flex',
                                         flexDirection: 'column',
                                         width: '20rem',
                                     }}>
                                         {column.map(
-                                            (x) => <Component id={x.title} width={'20rem'}
-                                                              updateHeights={this.updateHeights.bind(this, this.heightOfAllXs, this.layouts[[this.columnNo]])}/>
+                                            (x, i) => {
+                                                return <Component key={i} indexOfAllXs={x} content={this.allXs[x].title} width={'20rem'}
+                                                           updateHeights={this.updateHeights.bind(this, this.heightOfAllXs, this.layouts[this.columnNo])}/>
+                                            }
                                         )}
                                     </div>
                                 )
