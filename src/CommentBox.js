@@ -18,14 +18,13 @@ class CommentBox extends React.Component {
     }
 
     render() {
-        let {xs, httpPost} = this.props;
         return (
             <>
                 {this.state.xs.map(
                     ({id, user, content}) =>
                         <Comment key={id} user={user} content={content}/>
                 )}
-                <CreateComment httpPost={httpPost}/>
+                <CreateComment httpPost={this.props.httpPost}/>
             </>
         )
     }
