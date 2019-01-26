@@ -29,15 +29,15 @@ class App extends React.Component {
         //
         // return <Login></Login>
 
-        // const BlockWithMasonryWithRest =
-        //     withRestResources("http://localhost:8080/api/articles")(
-        //         withMasonryLayout(RandomColorBlock)
-        //     );
-        // return (
-        //     <BlockWithMasonryWithRest/>
-        // )
+        const BlockWithMasonryWithRest =
+            withRestResources("http://localhost:8080/api/articles")(
+                withMasonryLayout(RandomColorBlock)
+            );
+        return (
+            <BlockWithMasonryWithRest/>
+        )
 
-        return <Loader/>
+        // return <Loader/>
     }
 }
 

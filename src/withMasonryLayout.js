@@ -21,15 +21,18 @@ const withMasonryLayout = Component => {
             };
         }
 
+        get shortestColumnIndex() {
+            return this.layouts[this.columnNo].columnHeights.indexOf(
+                Math.min(...this.layouts[this.columnNo].columnHeights));
+        }
+
         appendX = (allXs, layout, x) => {
-            let iMin = layout.columnHeights.indexOf(Math.min(...layout.columnHeights));
-            layout.columns[iMin].push(allXs.push(x)-1);
+            layout.columns[this.shortestColumnIndex].push(allXs.push(x) - 1);
         };
 
         updateHeights = (heightOfAllXs, layout, heightOfX) => {
             heightOfAllXs.push(heightOfX);
-            let iMin = layout.columnHeights.indexOf(Math.min(...layout.columnHeights));
-            layout.columnHeights[iMin] += heightOfX;
+            layout.columnHeights[this.shortestColumnIndex] += heightOfX;
         };
 
         handleWindowResize = () => {
@@ -55,31 +58,19 @@ const withMasonryLayout = Component => {
         }
 
         render() {
-            return (
-                <div style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                }}>
-                    {
-                        this.state.columns.map(
-                            (column, i) => {
-                                return (
-                                    <div key={i} style={{
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        width: '20rem',
-                                    }}>
-                                        {column.map(
-                                            (x, i) => {
-                                                return <Component key={i} indexOfAllXs={x} content={this.allXs[x].title} width={'20rem'}
-                                                           updateHeights={this.updateHeights.bind(this, this.heightOfAllXs, this.layouts[this.columnNo])}/>
-                                            }
-                                        )}
-                                    </div>
-                                )
-                            }
-                        )
-                    }
+            return (<div style={{display: 'flex', flexDirection: 'row',}}>
+                    {this.state.columns.map((column, i) => {
+                            return (<div key={i} style={{display: 'flex', flexDirection: 'column', width: '20rem',}}>
+                                    {column.map((x, i) => {
+                                            return <Component key={i} indexOfAllXs={x}
+                                                              content={this.allXs[x].title} width={'20rem'}
+                                                              updateHeights={this.updateHeights.bind(this, this.heightOfAllXs, this.layouts[this.columnNo])}/>
+                                        }
+                                    )}
+                                </div>
+                            )
+                        }
+                    )}
                 </div>
             )
         }
