@@ -21,18 +21,22 @@ const withMasonryLayout = Component => {
             };
         }
 
-        get shortestColumnIndex() {
-            return this.layouts[this.columnNo].columnHeights.indexOf(
-                Math.min(...this.layouts[this.columnNo].columnHeights));
+        get layout() {
+            return this.layouts[this.columnNo];
         }
 
-        appendX = (allXs, layout, x) => {
-            layout.columns[this.shortestColumnIndex].push(allXs.push(x) - 1);
+        get shortestColumnIndex() {
+            return this.layout.columnHeights.indexOf(
+                Math.min(...this.layout.columnHeights));
+        }
+
+        set x(x) {
+            this.layout.columns[this.shortestColumnIndex].push(this.allXs.push(x) - 1);
         };
 
-        updateHeights = (heightOfAllXs, layout, heightOfX) => {
-            heightOfAllXs.push(heightOfX);
-            layout.columnHeights[this.shortestColumnIndex] += heightOfX;
+        setHeight = (height) => {
+            this.heightOfAllXs.push(height);
+            this.layout.columnHeights[this.shortestColumnIndex] += height;
         };
 
         handleWindowResize = () => {
@@ -46,7 +50,7 @@ const withMasonryLayout = Component => {
             this.props.getXs().then(response => {
                 // this.allXs.push(response.xs);
                 response.xs.forEach((x) => {
-                    this.appendX(this.allXs, this.layouts[this.columnNo], x);
+                    this.x= x;
                     this.setState(prevState => prevState);
                 });
             });
@@ -64,7 +68,7 @@ const withMasonryLayout = Component => {
                                     {column.map((x, i) => {
                                             return <Component key={i} indexOfAllXs={x}
                                                               content={this.allXs[x].title} width={'20rem'}
-                                                              updateHeights={this.updateHeights.bind(this, this.heightOfAllXs, this.layouts[this.columnNo])}/>
+                                                              setHeight={this.setHeight}/>
                                         }
                                     )}
                                 </div>

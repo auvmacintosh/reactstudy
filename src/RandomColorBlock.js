@@ -14,7 +14,7 @@ class RandomColorBlock extends React.Component {
 
     componentDidMount() {
         const height = this.divElement.clientHeight;
-        this.props.updateHeights(height);
+        this.props.setHeight(height);
     }
 
     render() {
@@ -43,7 +43,7 @@ RandomColorBlock.propTypes = {
     content: PropTypes.string, // Parent 定义 Block里显示的内容
     width: PropTypes.string, // Parent 定义 Block的宽度
     height: PropTypes.number, // Parent 定义 Block的高度
-    updateHeights: PropTypes.func,
+    setHeight: PropTypes.func,
 }
 
 export default RandomColorBlock;
