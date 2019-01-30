@@ -1,19 +1,20 @@
 import React from 'react';
 import PropTypes from "prop-types";
+import {map, prop} from "ramda";
 
 const withMasonryLayout = Component => {
     class ComponentWithMasonryLayout extends React.Component {
         constructor(props) {
             super(props);
             this.columnNo = 3;
-            this.allXs = []; // 一维数组，记录的是所有的xs
-            this.heightOfAllXs = [];
+            this.items = []; // 一维数组，记录的是所有的items
+            this.itemHeights = [];
 
             this.layouts = {};
             this.layouts[this.columnNo] = {
-                indexOfLastX: -1,
+                columns: [...Array(this.columnNo)].map(() => []), // 二维数组，存的是每列包含的那部分xs的indexInAllXs
                 columnHeights: Array(this.columnNo).fill(0), // 一维数组，每列的高度。
-                columns: [...Array(this.columnNo)].map(() => []), // 二维数组，存的是每列包含的那部分xs的indexOfAllXs
+                lastItemIndex: -1,
             };
 
             this.state = {
@@ -30,51 +31,54 @@ const withMasonryLayout = Component => {
                 Math.min(...this.layout.columnHeights));
         }
 
-        set x(x) {
-            this.layout.columns[this.shortestColumnIndex].push(this.allXs.push(x) - 1);
-        };
-
-        setHeight = (height) => {
-            this.heightOfAllXs.push(height);
-            this.layout.columnHeights[this.shortestColumnIndex] += height;
-        };
-
-        handleWindowResize = () => {
-            console.log("resize")
-        };
-
-        handleScrolledToBottom = () => {
+        set item(x) {
+            this.layout.columns[this.shortestColumnIndex].push(this.items.push(x) - 1);
         };
 
         componentDidMount() {
             this.props.getXs().then(response => {
-                // this.allXs.push(response.xs);
+                // this.items.push(response.items);
                 response.xs.forEach((x) => {
-                    this.x= x;
+                    this.item = x;
                     this.setState(prevState => prevState);
                 });
             });
             window.addEventListener('resize', this.handleWindowResize)
         }
 
+        setHeight = (height) => {
+            this.itemHeights.push(height);
+            this.layout.columnHeights[this.shortestColumnIndex] += height;
+        };
+
         componentWillUnmount() {
             window.removeEventListener('resize', this.handleWindowResize)
         }
 
+        // handleWindowResize = () => {
+        //     console.log("resize")
+        // };
+        //
+        // handleScrolledToBottom = () => {
+        // };
+
+        itemDom = (x, i) => {
+            return <Component key={i} indexInAllXs={x}
+                              content={this.items[x].title} width={'20rem'}
+                              setHeight={this.setHeight}/>
+        }
+
+        columnDom = (column, i) => {
+            return (<div key={i} style={{display: 'flex', flexDirection: 'column', width: '20rem',}}>
+                    {map(this.itemDom)(column)}
+                </div>
+            )
+        }
+
+
         render() {
             return (<div style={{display: 'flex', flexDirection: 'row',}}>
-                    {this.state.columns.map((column, i) => {
-                            return (<div key={i} style={{display: 'flex', flexDirection: 'column', width: '20rem',}}>
-                                    {column.map((x, i) => {
-                                            return <Component key={i} indexOfAllXs={x}
-                                                              content={this.allXs[x].title} width={'20rem'}
-                                                              setHeight={this.setHeight}/>
-                                        }
-                                    )}
-                                </div>
-                            )
-                        }
-                    )}
+                    {map(this.columnDom)(this.state.columns)}
                 </div>
             )
         }

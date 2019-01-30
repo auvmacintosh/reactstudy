@@ -8,7 +8,7 @@ const withRestResources = apiUrl => Component => {
             this.serviceFolder = apiUrl.split('/').pop();
         }
 
-        // 返回一个response，contains a object of xs and page
+        // 返回一个response，contains a object of items and page
         getXs = (page = 0, size = 10, sort = '') => (
             fetch(apiUrl + '?page=' + page + '&size=' + size + '&sort=' + sort)
                 .then(response => response.json())

@@ -13,7 +13,7 @@ class CommentBox extends React.Component {
     }
 
     componentDidMount() {
-        this.props.getXs().then(response => this.setState({xs: response.xs}));
+        this.props.getXs().then(response => this.setState({xs: response.items}));
         // this.props.getXs().then(response => this.setState(response)); // 这个state还包含page，如果page没用，就别放state里了
     }
 
