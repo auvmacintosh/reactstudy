@@ -1,6 +1,46 @@
 import React from 'react';
 import PropTypes from "prop-types";
-import {map, prop} from "ramda";
+import {compose, map} from "ramda";
+
+// const Item = (Component) => (setHeight) => {
+//     class ItemWithComponentAndSetHeight extends React.Component {
+//         componentDidMount() {
+//             const height = this.divElement.clientHeight;
+//             setHeight(height);
+//         }
+//
+//         render() {
+//             return (
+//                 <div ref={(divElement) => this.divElement = divElement}>
+//                     <Component item={this.props.item}/>
+//                 </div>
+//             )
+//         }
+//     }
+//
+//     ItemWithComponentAndSetHeight.propTypes = {
+//         item: PropTypes.object,
+//     };
+//
+//     return ItemWithComponentAndSetHeight;
+// }
+
+const Item = (Component) => (setHeight) => (item) => {
+    return <Component setHeight={setHeight}
+                      item={item}
+    />
+}
+const Column = items => (
+    <div style={{display: 'flex', flexDirection: 'column', width: '20rem',}}>
+        {items}
+    </div>
+)
+
+const Table = columns => (
+    <div style={{display: 'flex', flexDirection: 'row',}}>
+        {columns}
+    </div>
+)
 
 const withMasonryLayout = Component => {
     class ComponentWithMasonryLayout extends React.Component {
@@ -31,30 +71,30 @@ const withMasonryLayout = Component => {
                 Math.min(...this.layout.columnHeights));
         }
 
-        set item(x) {
-            this.layout.columns[this.shortestColumnIndex].push(this.items.push(x) - 1);
+        set item(item) {
+            this.layout.columns[this.shortestColumnIndex].push(this.items.push(item) - 1);
+        };
+
+        setHeight = (height) => {
+            console.log(this.layout)
+            this.itemHeights.push(height);
+            this.layout.columnHeights[this.shortestColumnIndex] += height;
         };
 
         componentDidMount() {
             this.props.getXs().then(response => {
-                // this.items.push(response.items);
                 response.xs.forEach((x) => {
                     this.item = x;
                     this.setState(prevState => prevState);
                 });
             });
-            window.addEventListener('resize', this.handleWindowResize)
+            // window.addEventListener('resize', this.handleWindowResize)
         }
 
-        setHeight = (height) => {
-            this.itemHeights.push(height);
-            this.layout.columnHeights[this.shortestColumnIndex] += height;
-        };
-
-        componentWillUnmount() {
-            window.removeEventListener('resize', this.handleWindowResize)
-        }
-
+        // componentWillUnmount() {
+        //     window.removeEventListener('resize', this.handleWindowResize)
+        // }
+        //
         // handleWindowResize = () => {
         //     console.log("resize")
         // };
@@ -62,24 +102,19 @@ const withMasonryLayout = Component => {
         // handleScrolledToBottom = () => {
         // };
 
-        itemDom = (x, i) => {
-            return <Component key={i} indexInAllXs={x}
-                              content={this.items[x].title} width={'20rem'}
-                              setHeight={this.setHeight}/>
-        }
-
-        columnDom = (column, i) => {
-            return (<div key={i} style={{display: 'flex', flexDirection: 'column', width: '20rem',}}>
-                    {map(this.itemDom)(column)}
-                </div>
-            )
-        }
-
-
         render() {
-            return (<div style={{display: 'flex', flexDirection: 'row',}}>
-                    {map(this.columnDom)(this.state.columns)}
-                </div>
+            let ItemWithComponentAndSetHeight = Item(Component)(this.setHeight);
+            return (
+                <>
+                    {
+                        compose(Table,
+                            map(Column),
+                            // map(map((item) => <ItemWithComponentAndSetHeight item={item}/>)),
+                            map(map(Item(Component)(this.setHeight))),
+                            map(map((x) => this.items[x]))
+                        )(this.state.columns)
+                    }
+                </>
             )
         }
     }

@@ -11,18 +11,15 @@ class RandomColorBlock extends React.Component {
         }
         return color;
     }
-
     componentDidMount() {
         const height = this.divElement.clientHeight;
         this.props.setHeight(height);
     }
-
     render() {
         // 生成随机高度
         return (
             <div style={{
-                width: this.props.width,
-                height: this.props.height + 'rem',
+                width: '20rem',
                 background: this.getRandomColor(),
                 fontSize: '2rem',
                 display: 'flex',
@@ -31,7 +28,8 @@ class RandomColorBlock extends React.Component {
             }}
                 ref={ (divElement) => this.divElement = divElement}
             >
-                {this.props.indexOfAllXs} {this.props.content}
+                {/*{this.props.item._links.self.href.split('/').last()} {this.props.item.title}*/}
+                {this.props.item.title}
             </div>
         )
     }
@@ -39,11 +37,7 @@ class RandomColorBlock extends React.Component {
 
 // 调用方法 <RandomColorBlock content={1} width={'20rem'}/>
 RandomColorBlock.propTypes = {
-    indexOfAllXs: PropTypes.number,
-    content: PropTypes.string, // Parent 定义 Block里显示的内容
-    width: PropTypes.string, // Parent 定义 Block的宽度
-    height: PropTypes.number, // Parent 定义 Block的高度
-    setHeight: PropTypes.func,
+    item: PropTypes.object, // Parent 定义 Block的宽度
 }
 
 export default RandomColorBlock;

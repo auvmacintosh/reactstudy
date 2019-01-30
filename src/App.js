@@ -1,12 +1,12 @@
 import React from 'react';
-import Post from './Post';
-import CommentBox from './CommentBox';
+// import Post from './Post';
+// import CommentBox from './CommentBox';
+// import style from './App.module.css'
+// import Login from './Login'
 import withRestResources from './withRestResources'
-import style from './App.module.css'
-import Login from './Login'
 import RandomColorBlock from "./RandomColorBlock";
 import withMasonryLayout from "./withMasonryLayout";
-import {ReactComponent as Loader} from './Loader1.svg'
+// import {ReactComponent as Loader} from './Loader1.svg'
 
 class App extends React.Component {
     // 使用function版的setState可以保证synchronize，而且可以使用prevState。
