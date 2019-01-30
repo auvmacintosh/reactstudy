@@ -11,10 +11,10 @@ class RandomColorBlock extends React.Component {
         }
         return color;
     }
-    componentDidMount() {
-        const height = this.divElement.clientHeight;
-        this.props.setHeight(height);
-    }
+    // componentDidMount() {
+    //     const height = this.divElement.clientHeight;
+    //     this.props.setHeight(height);
+    // }
     render() {
         // 生成随机高度
         return (
@@ -26,7 +26,7 @@ class RandomColorBlock extends React.Component {
                 justifyContent: 'center',
                 alignItems: 'center',
             }}
-                ref={ (divElement) => this.divElement = divElement}
+                // ref={ (divElement) => this.divElement = divElement}
             >
                 {/*{this.props.item._links.self.href.split('/').last()} {this.props.item.title}*/}
                 {this.props.item.title}

@@ -2,34 +2,37 @@ import React from 'react';
 import PropTypes from "prop-types";
 import {compose, map} from "ramda";
 
-// const Item = (Component) => (setHeight) => {
-//     class ItemWithComponentAndSetHeight extends React.Component {
-//         componentDidMount() {
-//             const height = this.divElement.clientHeight;
-//             setHeight(height);
-//         }
+const withSetHeightOnDidMount = setHeight => Component => {
+    class ItemWithComponentAndSetHeight extends React.Component {
+        componentDidMount() {
+            const height = this.divElement.clientHeight;
+            console.log(height)
+            setHeight(height);
+        }
+
+        render() {
+            console.log('fuck')
+            return (
+                <div ref={(divElement) => this.divElement = divElement}>
+                    <Component item={this.props.item}/>
+                </div>
+            )
+        }
+    }
+
+    ItemWithComponentAndSetHeight.propTypes = {
+        item: PropTypes.object,
+    };
+
+    return ItemWithComponentAndSetHeight;
+}
 //
-//         render() {
-//             return (
-//                 <div ref={(divElement) => this.divElement = divElement}>
-//                     <Component item={this.props.item}/>
-//                 </div>
-//             )
-//         }
-//     }
-//
-//     ItemWithComponentAndSetHeight.propTypes = {
-//         item: PropTypes.object,
-//     };
-//
-//     return ItemWithComponentAndSetHeight;
+// const ItemOld = (Component) => (setHeight) => (item) => {
+//     return <Component setHeight={setHeight}
+//                       item={item}
+//     />
 // }
 
-const Item = (Component) => (setHeight) => (item) => {
-    return <Component setHeight={setHeight}
-                      item={item}
-    />
-}
 const Column = items => (
     <div style={{display: 'flex', flexDirection: 'column', width: '20rem',}}>
         {items}
@@ -57,6 +60,7 @@ const withMasonryLayout = Component => {
                 lastItemIndex: -1,
             };
 
+            this.Item = withSetHeightOnDidMount(this.setHeight)(Component);
             this.state = {
                 columns: this.layouts[this.columnNo].columns
             };
@@ -76,7 +80,7 @@ const withMasonryLayout = Component => {
         };
 
         setHeight = (height) => {
-            console.log(this.layout)
+            // console.log(this.layout)
             this.itemHeights.push(height);
             this.layout.columnHeights[this.shortestColumnIndex] += height;
         };
@@ -102,16 +106,16 @@ const withMasonryLayout = Component => {
         // handleScrolledToBottom = () => {
         // };
 
+
         render() {
-            let ItemWithComponentAndSetHeight = Item(Component)(this.setHeight);
             return (
                 <>
                     {
                         compose(Table,
                             map(Column),
-                            // map(map((item) => <ItemWithComponentAndSetHeight item={item}/>)),
-                            map(map(Item(Component)(this.setHeight))),
-                            map(map((x) => this.items[x]))
+                            map(map(item => <this.Item item={item}/>)),
+                            // map(map(ItemOld(Component)(this.setHeight))),
+                            map(map(x => this.items[x]))
                         )(this.state.columns)
                     }
                 </>
