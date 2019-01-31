@@ -6,6 +6,7 @@ import React from 'react';
 import withRestResources from './withRestResources'
 import RandomColorBlock from "./RandomColorBlock";
 import withMasonryLayout from "./withMasonryLayout";
+import {compose} from 'ramda';
 // import {ReactComponent as Loader} from './Loader1.svg'
 
 class App extends React.Component {
@@ -14,11 +15,17 @@ class App extends React.Component {
     //     this.setState(prevState => ({comments: prevState.comments.concat(newComment)}));
     // }
 
+    // PostWithData =
+    //     withRestResources('http://localhost:3000/staticapi/post')(Post);
+    // CommentListWithData =
+    //     withRestResources('http://localhost:3000/staticapi/comments')(CommentBox);
+
+    BlockWithMasonryWithRest = compose(
+        withRestResources("http://localhost:8080/api/articles"),
+        withMasonryLayout
+    )(RandomColorBlock);
+
     render() {
-        // const PostWithData =
-        //     withRestResources('http://localhost:3000/staticapi/post')(Post);
-        // const CommentListWithData =
-        //     withRestResources('http://localhost:3000/staticapi/comments')(CommentBox);
         // return (
         //     <div className={style.container}>
         //         <div className={style.brace}/>
@@ -26,18 +33,14 @@ class App extends React.Component {
         //         <CommentListWithData />
         //     </div>
         // )
-        //
+
         // return <Login></Login>
 
-        const BlockWithMasonryWithRest =
-            withRestResources("http://localhost:8080/api/articles")(
-                withMasonryLayout(RandomColorBlock)
-            );
-        return (
-            <BlockWithMasonryWithRest/>
-        )
-
         // return <Loader/>
+
+        return (
+            <this.BlockWithMasonryWithRest/>
+        )
     }
 }
 

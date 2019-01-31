@@ -1,23 +1,6 @@
 import React from 'react';
 import PropTypes from "prop-types";
-import {compose, map} from "ramda";
-
-const withSetHeightOnDidMount = setHeight => {
-    return class ItemWithComponentAndSetHeight extends React.Component {
-        componentDidMount() {
-            const height = this.divElement.clientHeight;
-            setHeight(height);
-        }
-
-        render() {
-            return (
-                <div ref={(divElement) => this.divElement = divElement}>
-                    {this.props.children}
-                </div>
-            )
-        }
-    }
-}
+import {compose, map, addIndex} from "ramda";
 
 const withMasonryLayout = Component => {
     class ComponentWithMasonryLayout extends React.Component {
@@ -86,33 +69,28 @@ const withMasonryLayout = Component => {
             </div>
         );
 
-        Column = items => (
-            <div style={{display: 'flex', flexDirection: 'column', width: '20rem',}}>
+        Column = (items, i) => (
+            <div key={i} style={{display: 'flex', flexDirection: 'column', width: '20rem',}}>
                 {items}
             </div>
         );
 
-        ComponentWithSetHeightOnDidMount = withSetHeightOnDidMount(this.setHeight);
-        Item = item => (
-            <this.ComponentWithSetHeightOnDidMount>
+        Item = (item, i) => (
+            <ItemClass key={i} setHeight={this.setHeight}>
                 <Component item={item}/>
-            </this.ComponentWithSetHeightOnDidMount>
+            </ItemClass>
         );
 
         render() {
             return (
-                <>
-                    {
-                        // map(f)就是一层递归，也就是对Array里的每个元素使用f函数
-                        // map(map(f))就是两层递归
-                        compose( // compose的作用就是把下边的函数串联起来
-                            this.Table, // 打包一个table
-                            map(this.Column), // 打包n个列
-                            map(map(this.Item)), // 打包n*m个Item
-                            map(map(this.getItem)) // 根据index查出对应的对象
-                        )(this.state.itemIndexMatrix) // 输入是一个n*m维的矩阵，每个元素都是index
-                    }
-                </>
+                // map(f)就是一层递归，也就是对Array里的每个元素使用f函数
+                // map(map(f))就是两层递归
+                compose( // compose的作用就是把下边的函数串联起来
+                    this.Table, // 打包一个table
+                    imp(this.Column), // 打包n个列
+                    map(imp(this.Item)), // 打包n*m个Item
+                    map(map(this.getItem)) // 根据index查出对应的对象
+                )(this.state.itemIndexMatrix) // 输入是一个n*m维的矩阵，每个元素都是index
             )
         }
     }
@@ -122,6 +100,27 @@ const withMasonryLayout = Component => {
     };
 
     return ComponentWithMasonryLayout;
+};
+
+const imp = addIndex(map);
+
+class ItemClass extends React.Component {
+    componentDidMount() {
+        const height = this.divEl.clientHeight;
+        this.props.setHeight(height);
+    }
+
+    render() {
+        return (
+            <div style={{padding: '0', margin: '0', border: '0'}} ref={el => this.divEl = el}>
+                {this.props.children}
+            </div>
+        )
+    }
+}
+
+ItemClass.propTypes = {
+    setHeight: PropTypes.func.isRequired,
 };
 
 export default withMasonryLayout;
