@@ -2,7 +2,7 @@ import React from 'react';
 
 // 这个类所有http方法的返回都是resource数组，也就是xs。
 const withRestResources = apiUrl => Component => {
-    return  class ComponentWithRestResources extends React.Component {
+    return class ComponentWithRestResources extends React.Component {
         constructor(props) {
             super(props);
             this.serviceFolder = apiUrl.split('/').pop();

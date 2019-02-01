@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from "prop-types";
-import styled from "styled-components";
+import s from "styled-components";
 
 const getRandomColor = () => {
     let letters = '0123456789ABCDEF';
@@ -11,13 +11,12 @@ const getRandomColor = () => {
     return color;
 };
 
-const Div = styled.div`
-    width: 20rem;
+const Div = s.div`
     font-size: 2rem;
     display: flex;
     justify-content: center;
     alignItems: center;
-`
+`;
 
 const RandomColorBlock = ({item}) => (
     <Div style={{background: getRandomColor()}}>

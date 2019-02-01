@@ -6,7 +6,7 @@ import React from 'react';
 import withRestResources from './withRestResources'
 import RandomColorBlock from "./RandomColorBlock";
 import withMasonryLayout from "./withMasonryLayout";
-import * as R from 'ramda';
+import * as r from 'ramda';
 // import {ReactComponent as Loader} from './Loader1.svg'
 
 class App extends React.Component {
@@ -20,7 +20,7 @@ class App extends React.Component {
     // CommentListWithData =
     //     withRestResources('http://localhost:3000/staticapi/comments')(CommentBox);
 
-    BlockWithMasonryWithRest = R.compose(
+    BlockWithMasonryWithRest = r.compose(
         withRestResources("http://localhost:8080/api/articles"),
         withMasonryLayout
     )(RandomColorBlock);
