@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from "prop-types";
+import styled from "styled-components";
 
 const getRandomColor = () => {
     let letters = '0123456789ABCDEF';
@@ -10,21 +11,19 @@ const getRandomColor = () => {
     return color;
 };
 
-const style = {
-    width: '20rem',
-    fontSize: '2rem',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-};
+const Div = styled.div`
+    width: 20rem;
+    font-size: 2rem;
+    display: flex;
+    justify-content: center;
+    alignItems: center;
+`
 
-const RandomColorBlock = ({item}) => {
-    return (
-        <div style={Object.assign({background: getRandomColor()}, style)}>
-            {item._links.self.href.split('/').last()} {item.title}
-        </div>
-    )
-};
+const RandomColorBlock = ({item}) => (
+    <Div style={{background: getRandomColor()}}>
+        {item._links.self.href.split('/').last()} {item.title}
+    </Div>
+);
 
 // 调用方法 <RandomColorBlock item={item} />
 RandomColorBlock.propTypes = {

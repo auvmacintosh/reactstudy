@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from "prop-types";
-import {compose, map, addIndex} from "ramda";
+import * as R from "ramda";
 
 const withMasonryLayout = Component => {
     class ComponentWithMasonryLayout extends React.Component {
@@ -85,11 +85,11 @@ const withMasonryLayout = Component => {
             return (
                 // map(f)就是一层递归，也就是对Array里的每个元素使用f函数
                 // map(map(f))就是两层递归
-                compose( // compose的作用就是把下边的函数串联起来
+                R.compose( // compose的作用就是把下边的函数串联起来
                     this.Table, // 打包一个table
-                    imp(this.Column), // 打包n个列
-                    map(imp(this.Item)), // 打包n*m个Item
-                    map(map(this.getItem)) // 根据index查出对应的对象
+                    idxMp(this.Column), // 打包n个列
+                    R.map(idxMp(this.Item)), // 打包n*m个Item
+                    R.map(R.map(this.getItem)) // 根据index查出对应的对象
                 )(this.state.itemIndexMatrix) // 输入是一个n*m维的矩阵，每个元素都是index
             )
         }
@@ -102,7 +102,7 @@ const withMasonryLayout = Component => {
     return ComponentWithMasonryLayout;
 };
 
-const imp = addIndex(map);
+const idxMp = R.addIndex(R.map);
 
 class ItemClass extends React.Component {
     componentDidMount() {
