@@ -48,13 +48,13 @@ const withMasonryLayout = Component => {
                 Math.min(...this.layout.columnHeights));
         }
 
-        set item(item) {
-            this.layout.itemIndexMatrix[this.shortestColumnIndex].push(this.items.push(item) - 1);
-        };
-
         setHeight = height => {
             this.itemHeights.push(height);
             this.layout.columnHeights[this.shortestColumnIndex] += height;
+        };
+
+        addItem = item => {
+            this.layout.itemIndexMatrix[this.shortestColumnIndex].push(this.items.push(item) - 1);
         };
 
         getItem = i => this.items[i];
@@ -62,7 +62,7 @@ const withMasonryLayout = Component => {
         componentDidMount() {
             this.props.getXs().then(response => {
                 response.xs.forEach((x) => {
-                    this.item = x;
+                    this.addItem(x);
                     this.setState(prevState => prevState);
                 });
             });
@@ -122,15 +122,23 @@ const withMasonryLayout = Component => {
 };
 
 class ItemClass extends React.Component {
+    constructor(props) {
+        super(props);
+        this.style = {
+            padding: HALF_GAP + 'rem',
+            margin: '0',
+            border: '0',
+        }
+    }
+
     componentDidMount() {
         const height = this.divEl.clientHeight;
         this.props.setHeight(height);
-
     }
 
     render() {
         return (
-            <div style={{ padding: HALF_GAP + 'rem', margin: '0', border: '0' }} ref={el => this.divEl = el}>
+            <div style={this.style} ref={el => this.divEl = el}>
                 {this.props.children}
             </div>
         )
