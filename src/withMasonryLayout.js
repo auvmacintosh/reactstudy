@@ -4,6 +4,7 @@ import * as R from "ramda";
 
 const COLUMN_WIDTH = 20; // rem
 const HALF_GAP = 0.8; // rem
+const PAGE_SIZE = 20; // 每次拉到底的page size，本来想第一次刷新多一些，后拉发现page no不好算
 
 const idxMp = R.addIndex(R.map);
 
@@ -14,13 +15,7 @@ const withMasonryLayout = Component => {
             this.columnNo = 3; // 初始值，没什么用，因为第一次render之前就改了。
             this.items = []; // 一维数组，记录的是所有的items
             this.itemHeights = [];
-
-            this.layouts = {};
-            this.layouts[this.columnNo] = {
-                itemIndexMatrix: [...Array(this.columnNo)].map(() => []), // 二维数组，存的是每列包含的那部分xs的indexInAllXs
-                columnHeights: Array(this.columnNo).fill(0), // 一维数组，每列的高度。
-                lastItemIndex: -1,
-            };
+            this.page = 0; // getXs的页号
 
             this.tableStyle = {
                 display: 'flex',
@@ -32,6 +27,13 @@ const withMasonryLayout = Component => {
                 display: 'flex',
                 flexDirection: 'column',
                 width: COLUMN_WIDTH + 'rem',
+            };
+
+            this.layouts = {};
+            this.layouts[this.columnNo] = {
+                itemIndexMatrix: [...Array(this.columnNo)].map(() => []), // 二维数组，存的是每列包含的那部分xs的indexInAllXs
+                columnHeights: Array(this.columnNo).fill(0), // 一维数组，每列的高度。
+                lastItemIndex: -1,
             };
 
             this.state = {
@@ -55,36 +57,47 @@ const withMasonryLayout = Component => {
 
         addItem = item => {
             this.layout.itemIndexMatrix[this.shortestColumnIndex].push(this.items.push(item) - 1);
+            this.setState(prevState => prevState);
         };
 
         getItem = i => this.items[i];
 
         componentDidMount() {
-            this.props.getXs().then(response => {
+            this.props.getXs(this.page++, PAGE_SIZE).then(response => {
                 response.xs.forEach((x) => {
                     this.addItem(x);
-                    this.setState(prevState => prevState);
                 });
             });
             // window.addEventListener('resize', this.handleWindowResize)
+            window.addEventListener('scroll', this.handleScrolledToBottom)
         }
 
         // componentWillUnmount() {
         //     window.removeEventListener('resize', this.handleWindowResize)
+        //     window.removeEventListener('scroll', this.handleScrolledToBottom)
         // }
         //
         // handleWindowResize = () => {
         //     console.log("resize")
         // };
         //
-        // handleScrolledToBottom = () => {
-        // };
+        handleScrolledToBottom = () => {
+            // https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollHeight
+            // if (window.scrollHeight - window.scrollTop === window.clientHeight) {
+            //     console.log("resize")
+            // }
+
+            // https://stackoverflow.com/questions/9439725/javascript-how-to-detect-if-browser-window-is-scrolled-to-bottom
+            // 差一点没到底就会触发
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+                console.log("resize")
+            }
+        };
 
         handelClick = () => {
-            this.props.getXs().then(response => {
+            this.props.getXs(this.page++, PAGE_SIZE).then(response => {
                 response.xs.forEach((x) => {
                     this.addItem(x);
-                    this.setState(prevState => prevState);
                 });
             });
         };
@@ -115,6 +128,7 @@ const withMasonryLayout = Component => {
             R.map(idxMp(this.Item)), // 打包n*m个Item
             R.map(R.map(this.getItem)) // 根据index查出对应的对象
         );
+
         // 输入是一个n*m维的矩阵，每个元素都是index
 
         render() {
