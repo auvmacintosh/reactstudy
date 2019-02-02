@@ -7,6 +7,8 @@ import withRestResources from './withRestResources'
 import RandomColorBlock from "./RandomColorBlock";
 import withMasonryLayout from "./withMasonryLayout";
 import * as R from 'ramda';
+import 'normalize.css';
+import './last';
 // import {ReactComponent as Loader} from './Loader1.svg'
 
 class App extends React.Component {

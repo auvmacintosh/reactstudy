@@ -20,7 +20,7 @@ const Div = S.div`
     alignItems: center;
 `;
 
-const RandomColorBlock = ({item}) => (
+const RandomColorBlock = ({item, MARGIN}) => (
     <Div>
         {item._links.self.href.split('/').last()} {item.title}
     </Div>
