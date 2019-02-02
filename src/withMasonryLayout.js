@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import * as r from "ramda";
 import s from 'styled-components';
 
-
 const withMasonryLayout = Component => {
     class ComponentWithMasonryLayout extends React.Component {
         constructor(props) {

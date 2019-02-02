@@ -11,7 +11,9 @@ const getRandomColor = () => {
     return color;
 };
 
+// styled-component 可以传函数，之前给getRandomColor()，只能生成一个颜色
 const Div = s.div`
+    background: ${getRandomColor};
     font-size: 2rem;
     display: flex;
     justify-content: center;
@@ -19,7 +21,7 @@ const Div = s.div`
 `;
 
 const RandomColorBlock = ({item}) => (
-    <Div style={{background: getRandomColor()}}>
+    <Div>
         {item._links.self.href.split('/').last()} {item.title}
     </Div>
 );
