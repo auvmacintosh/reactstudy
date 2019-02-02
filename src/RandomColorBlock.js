@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from "prop-types";
-import s from "styled-components";
+import S from "styled-components";
 
 const getRandomColor = () => {
     let letters = '0123456789ABCDEF';
@@ -12,7 +12,7 @@ const getRandomColor = () => {
 };
 
 // styled-component 可以传函数，之前给getRandomColor()，只能生成一个颜色
-const Div = s.div`
+const Div = S.div`
     background: ${getRandomColor};
     font-size: 2rem;
     display: flex;

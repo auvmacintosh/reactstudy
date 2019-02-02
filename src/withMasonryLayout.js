@@ -1,13 +1,28 @@
 import React from 'react';
 import PropTypes from "prop-types";
-import * as r from "ramda";
-import s from 'styled-components';
+import * as R from "ramda";
+import S from 'styled-components';
+
+const INITIAL_COLUMN_NO = 3;
+const COLUMN_WIDTH = 20; // rem
+
+const StyledTable = S.div`
+display: flex; 
+justify-content: center; 
+min-width: ${props => COLUMN_WIDTH * props.columnNo + 'rem'};
+`;
+const StyledColumn = S.div`
+display: flex; 
+flex-direction: column; 
+width: ${COLUMN_WIDTH + 'rem'};
+`;
+const idxMp = R.addIndex(R.map);
 
 const withMasonryLayout = Component => {
     class ComponentWithMasonryLayout extends React.Component {
         constructor(props) {
             super(props);
-            this.columnNo = 3;
+            this.columnNo = INITIAL_COLUMN_NO;
             this.items = []; // 一维数组，记录的是所有的items
             this.itemHeights = [];
 
@@ -64,17 +79,18 @@ const withMasonryLayout = Component => {
         // handleScrolledToBottom = () => {
         // };
 
+
         // Table = columns => (<DivT> {columns} </DivT>);
         Table = columns => (
-            <div style={{display: 'flex', width: '60rem'}}>
+            <StyledTable columnNo={this.columnNo}>
                 {columns}
-            </div>
+            </StyledTable>
         );
 
         Column = (items, i) => (
-            <div key={i} style={{display: 'flex', flexDirection: 'column', width: '20rem'}}>
+            <StyledColumn key={i}>
                 {items}
-            </div>
+            </StyledColumn>
         );
 
         Item = (item, i) => (
@@ -87,11 +103,11 @@ const withMasonryLayout = Component => {
             return (
                 // map(f)就是一层递归，也就是对Array里的每个元素使用f函数
                 // map(map(f))就是两层递归
-                r.compose( // compose的作用就是把下边的函数串联起来
+                R.compose( // compose的作用就是把下边的函数串联起来
                     this.Table, // 打包一个table
                     idxMp(this.Column), // 打包n个列
-                    r.map(idxMp(this.Item)), // 打包n*m个Item
-                    r.map(r.map(this.getItem)) // 根据index查出对应的对象
+                    R.map(idxMp(this.Item)), // 打包n*m个Item
+                    R.map(R.map(this.getItem)) // 根据index查出对应的对象
                 )(this.state.itemIndexMatrix) // 输入是一个n*m维的矩阵，每个元素都是index
             )
         }
@@ -103,8 +119,6 @@ const withMasonryLayout = Component => {
 
     return ComponentWithMasonryLayout;
 };
-
-const idxMp = r.addIndex(r.map);
 
 class ItemClass extends React.Component {
     componentDidMount() {
