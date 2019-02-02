@@ -11,9 +11,10 @@ const getRandomColor = () => {
     return color;
 };
 
+// background: ${getRandomColor};
 // styled-component 可以传函数，之前给getRandomColor()，只能生成一个颜色
 const Div = S.div`
-    background: ${getRandomColor};
+    background: grey;
     font-size: 2rem;
     display: flex;
     justify-content: center;

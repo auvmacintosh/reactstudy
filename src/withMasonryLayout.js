@@ -80,6 +80,15 @@ const withMasonryLayout = Component => {
         // handleScrolledToBottom = () => {
         // };
 
+        handelClick = () => {
+            this.props.getXs().then(response => {
+                response.xs.forEach((x) => {
+                    this.addItem(x);
+                    this.setState(prevState => prevState);
+                });
+            });
+        };
+
         Table = columns => (
             <div style={this.tableStyle}>
                 {columns}
@@ -94,7 +103,7 @@ const withMasonryLayout = Component => {
 
         Item = (item, i) => (
             <ItemClass key={i} setHeight={this.setHeight}>
-                <Component item={item} />
+                <Component item={item}/>
             </ItemClass>
         );
 
@@ -105,11 +114,15 @@ const withMasonryLayout = Component => {
             idxMp(this.Column), // 打包n个列
             R.map(idxMp(this.Item)), // 打包n*m个Item
             R.map(R.map(this.getItem)) // 根据index查出对应的对象
-        )
+        );
+        // 输入是一个n*m维的矩阵，每个元素都是index
 
         render() {
             return (
-                this.Assembly(this.state.itemIndexMatrix) // 输入是一个n*m维的矩阵，每个元素都是index
+                <>
+                    {this.Assembly(this.state.itemIndexMatrix)}
+                    <button onClick={this.handelClick}>More</button>
+                </>
             )
         }
     }
