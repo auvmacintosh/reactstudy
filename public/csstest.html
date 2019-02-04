@@ -6,33 +6,36 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
     <style>
-        .table {
-            display: flex;
-            justify-content: center;
-            flex-direction: row;
-            background-color: red;
-            min-width: 60rem;
+        :root {
+            box-sizing: border-box; /*width和height包含了border的尺寸*/
         }
-        .column {
-            display: flex;
-            flex-direction: column;
+
+        *,
+        ::before,
+        ::after {
+            box-sizing: inherit;
+        }
+
+        .a {
+            width: 100px;
+            height: 100px;
+            background-color:red;
+        }
+
+        .b {
+            width: 50px;
+            height: 50px;
+            margin-top: 10px;
             background-color: yellow;
-            width: 20rem;
         }
+
+
     </style>
 </head>
 
 <body>
-<div class="table">
-    <div class="column">
-        first
-    </div>
-    <div class="column">
-        second
-    </div>
-    <div class="column">
-        three
-    </div>
+<div class="a">
+    <div class="b"></div>
 </div>
 </body>
 

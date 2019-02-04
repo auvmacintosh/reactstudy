@@ -4,7 +4,7 @@ import * as R from "ramda";
 
 const COLUMN_WIDTH = 20; // rem
 const HALF_GAP = 0.8; // rem
-const PAGE_SIZE = 20; // 每次拉到底的page size，本来想第一次刷新多一些，后拉发现page no不好算
+const PAGE_SIZE = 10; // 每次拉到底的page size，本来想第一次刷新多一些，后拉发现page no不好算
 
 const idxMp = R.addIndex(R.map);
 
@@ -12,17 +12,19 @@ const withMasonryLayout = Component => {
     class ComponentWithMasonryLayout extends React.Component {
         constructor(props) {
             super(props);
-            this.columnNo = 3; // 初始值，没什么用，因为第一次render之前就改了。
+            this.htmlFontSize = window.getComputedStyle(document.documentElement)
+                .fontSize.slice(0, -2); // normally is 16
             this.items = []; // 一维数组，记录的是所有的items
             this.itemHeights = [];
             this.page = 0; // getXs的页号
 
+            // table不能定义margin，会跟body margin collapse，导致判断是否滚动到底错误
             this.tableStyle = {
                 display: 'flex',
                 justifyContent: 'center',
-                margin: HALF_GAP + 'rem',
+                padding: HALF_GAP + 'rem',
                 minWidth: (COLUMN_WIDTH * this.columnNo) + 'rem',
-            };
+        };
             this.columnStyle = {
                 display: 'flex',
                 flexDirection: 'column',
@@ -39,6 +41,14 @@ const withMasonryLayout = Component => {
             this.state = {
                 itemIndexMatrix: this.layouts[this.columnNo].itemIndexMatrix
             };
+
+            console.log(window.innerWidth);
+        }
+
+        get columnNo() {
+            let completeColumnNo = Math.floor((window.innerWidth - 2 * HALF_GAP * this.htmlFontSize)
+                / (COLUMN_WIDTH * this.htmlFontSize));
+            return completeColumnNo === 0 ? 1 : completeColumnNo;
         }
 
         get layout() {
@@ -68,38 +78,34 @@ const withMasonryLayout = Component => {
                     this.addItem(x);
                 });
             });
-            // window.addEventListener('resize', this.handleWindowResize)
-            window.addEventListener('scroll', this.handleScrolledToBottom)
+            ['resize', 'scroll'].forEach(e => window.addEventListener(e, this.handleWindowEvent));
         }
 
-        // componentWillUnmount() {
-        //     window.removeEventListener('resize', this.handleWindowResize)
-        //     window.removeEventListener('scroll', this.handleScrolledToBottom)
-        // }
-        //
-        // handleWindowResize = () => {
-        //     console.log("resize")
-        // };
-        //
-        handleScrolledToBottom = () => {
-            // https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollHeight
-            // if (window.scrollHeight - window.scrollTop === window.clientHeight) {
-            //     console.log("resize")
-            // }
+        componentWillUnmount() {
+            ['resize', 'scroll'].forEach(e => window.removeEventListener(e, this.handleWindowEvent));
+        }
 
-            // https://stackoverflow.com/questions/9439725/javascript-how-to-detect-if-browser-window-is-scrolled-to-bottom
-            // 差一点没到底就会触发
-            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-                console.log("resize")
+        // 如果用>=判断，有横向滚动条的话，会在第一次触发之后，还会继续触发一到两次
+        // 如果用===判断，就不能有横向滚动条，有了横向滚动条就触发不了了。
+        // TODO: 固定横竖滚动条,看一下innerHeight是否包含滚动条
+        handleWindowEvent = (e) => {
+            switch (e.type) {
+                case "scroll":
+                    if ((window.innerHeight + window.scrollY) >= document.body.clientHeight) {
+                        this.props.getXs(0, PAGE_SIZE).then(response => {
+                            response.xs.forEach((x) => {
+                                this.addItem(x);
+                            });
+                        });
+                    }
+                    break;
+                case "resize":
+                    // TODO: 完成resize
+                    console.log("resize");
+                    break;
+                default:
+                    console.log("no such event.")
             }
-        };
-
-        handelClick = () => {
-            this.props.getXs(this.page++, PAGE_SIZE).then(response => {
-                response.xs.forEach((x) => {
-                    this.addItem(x);
-                });
-            });
         };
 
         Table = columns => (
@@ -135,7 +141,6 @@ const withMasonryLayout = Component => {
             return (
                 <>
                     {this.Assembly(this.state.itemIndexMatrix)}
-                    <button onClick={this.handelClick}>More</button>
                 </>
             )
         }
