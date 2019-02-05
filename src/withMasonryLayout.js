@@ -18,13 +18,17 @@ const withMasonryLayout = Component => {
             this.itemHeights = [];
             this.page = 0; // getXs的页号
 
+            // 最好是固定滚动条,不然计算宽高可能会有错误
+            // document.body.style.overflowX = 'hidden';
+            // document.body.style.overflowY = 'scroll';
+
             // table不能定义margin，会跟body margin collapse，导致判断是否滚动到底错误
             this.tableStyle = {
                 display: 'flex',
                 justifyContent: 'center',
                 padding: HALF_GAP + 'rem',
                 minWidth: (COLUMN_WIDTH * this.columnNo) + 'rem',
-        };
+            };
             this.columnStyle = {
                 display: 'flex',
                 flexDirection: 'column',
@@ -41,13 +45,12 @@ const withMasonryLayout = Component => {
             this.state = {
                 itemIndexMatrix: this.layouts[this.columnNo].itemIndexMatrix
             };
-
-            console.log(window.innerWidth);
         }
 
         get columnNo() {
             let completeColumnNo = Math.floor((window.innerWidth - 2 * HALF_GAP * this.htmlFontSize)
                 / (COLUMN_WIDTH * this.htmlFontSize));
+            // 最小也得是一列，不能返回0列
             return completeColumnNo === 0 ? 1 : completeColumnNo;
         }
 
@@ -72,12 +75,27 @@ const withMasonryLayout = Component => {
 
         getItem = i => this.items[i];
 
-        componentDidMount() {
-            this.props.getXs(this.page++, PAGE_SIZE).then(response => {
-                response.xs.forEach((x) => {
-                    this.addItem(x);
+        // Asynchronous Recursive Loop
+        recursiveGetXs = () => {
+            // 需要用>=判断，如果用===判断，有滚动条的时候，就不会触发。
+            // 但是用>=有一个问题就是会连续触发，这时候需要先removeEventListener再add上去
+            if ((window.innerHeight + window.scrollY) >= document.body.clientHeight) {
+                // remove不存在的eventListener不会报错
+                window.removeEventListener('scroll', this.handleWindowEvent)
+                // this.props.getXs(this.page++, PAGE_SIZE).then(response => {
+                this.props.getXs(0, PAGE_SIZE).then(response => {
+                    response.xs.forEach((x) => {
+                        this.addItem(x);
+                    });
+                    // 相同事件，相同callback的多次addEventListener只会被加一次
+                    window.addEventListener('scroll', this.handleWindowEvent)
+                    this.recursiveGetXs();
                 });
-            });
+            }
+        }
+
+        componentDidMount() {
+            this.recursiveGetXs();
             ['resize', 'scroll'].forEach(e => window.addEventListener(e, this.handleWindowEvent));
         }
 
@@ -85,23 +103,13 @@ const withMasonryLayout = Component => {
             ['resize', 'scroll'].forEach(e => window.removeEventListener(e, this.handleWindowEvent));
         }
 
-        // 如果用>=判断，有横向滚动条的话，会在第一次触发之后，还会继续触发一到两次
-        // 如果用===判断，就不能有横向滚动条，有了横向滚动条就触发不了了。
-        // TODO: 固定横竖滚动条,看一下innerHeight是否包含滚动条
         handleWindowEvent = (e) => {
             switch (e.type) {
                 case "scroll":
-                    if ((window.innerHeight + window.scrollY) >= document.body.clientHeight) {
-                        this.props.getXs(0, PAGE_SIZE).then(response => {
-                            response.xs.forEach((x) => {
-                                this.addItem(x);
-                            });
-                        });
-                    }
+                    this.recursiveGetXs();
                     break;
                 case "resize":
                     // TODO: 完成resize
-                    console.log("resize");
                     break;
                 default:
                     console.log("no such event.")

@@ -15,9 +15,6 @@
 
 body {
   font-family: arial, SimHei, STHeiti, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-  /*Masonry Layout 最好是固定以下滚动条*/
-  overflow-x: hidden;
-  overflow-y: scroll;
 }
 
 /*body {*/
