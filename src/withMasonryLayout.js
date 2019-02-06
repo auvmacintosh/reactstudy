@@ -51,7 +51,8 @@ const withMasonryLayout = Component => {
             let completeColumnNo = Math.floor((window.innerWidth - 2 * HALF_GAP * this.htmlFontSize)
                 / (COLUMN_WIDTH * this.htmlFontSize));
             // 最小也得是一列，不能返回0列
-            return completeColumnNo === 0 ? 1 : completeColumnNo;
+            // return completeColumnNo === 0 ? 1 : completeColumnNo;
+            return 3;
         }
 
         get layout() {
@@ -75,11 +76,12 @@ const withMasonryLayout = Component => {
 
         getItem = i => this.items[i];
 
-        // Asynchronous Recursive Loop
-        recursiveGetXs = () => {
+        // Asynchronous Recursive
+        getXsWhenReachBottom = () => {
             // 需要用>=判断，如果用===判断，有滚动条的时候，就不会触发。
             // 但是用>=有一个问题就是会连续触发，这时候需要先removeEventListener再add上去
-            if ((window.innerHeight + window.scrollY) >= document.body.clientHeight) {
+            // +2的原因是，缩放以后，这三个值会四舍五入，比如应该是0.3+0.3>=0.6，四舍五入以后变成0+0!>=1
+            if ((window.innerHeight + window.scrollY + 2) >= document.body.clientHeight) {
                 // remove不存在的eventListener不会报错
                 window.removeEventListener('scroll', this.handleWindowEvent)
                 // this.props.getXs(this.page++, PAGE_SIZE).then(response => {
@@ -89,13 +91,13 @@ const withMasonryLayout = Component => {
                     });
                     // 相同事件，相同callback的多次addEventListener只会被加一次
                     window.addEventListener('scroll', this.handleWindowEvent)
-                    this.recursiveGetXs();
+                    this.getXsWhenReachBottom();
                 });
             }
         }
 
         componentDidMount() {
-            this.recursiveGetXs();
+            this.getXsWhenReachBottom();
             ['resize', 'scroll'].forEach(e => window.addEventListener(e, this.handleWindowEvent));
         }
 
@@ -106,13 +108,14 @@ const withMasonryLayout = Component => {
         handleWindowEvent = (e) => {
             switch (e.type) {
                 case "scroll":
-                    this.recursiveGetXs();
+                    this.getXsWhenReachBottom();
                     break;
                 case "resize":
                     // TODO: 完成resize
+                    console.log('resize');
                     break;
                 default:
-                    console.log("no such event.")
+                    console.log("no such event.");
             }
         };
 
