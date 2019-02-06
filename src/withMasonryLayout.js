@@ -5,6 +5,7 @@ import * as R from "ramda";
 const COLUMN_WIDTH = 20; // rem
 const HALF_GAP = 0.8; // rem
 const PAGE_SIZE = 10; // 每次拉到底的page size，本来想第一次刷新多一些，后拉发现page no不好算
+const RESIZE_DONE_TIMEOUT = 100; // 这么多ms没有resize以后才会开始重新布局
 
 const idxMp = R.addIndex(R.map);
 
@@ -16,11 +17,10 @@ const withMasonryLayout = Component => {
                 .fontSize.slice(0, -2); // normally is 16
             this.items = []; // 一维数组，记录的是所有的items
             this.itemHeights = [];
-            this.page = 0; // getXs的页号
-
-            // 最好是固定滚动条,不然计算宽高可能会有错误
-            // document.body.style.overflowX = 'hidden';
-            // document.body.style.overflowY = 'scroll';
+            this.layouts = {};
+            this.nextPage = 0; // getXs的页号
+            this.prevColumnNo = 0;
+            this.resizeDone = -1;
 
             // table不能定义margin，会跟body margin collapse，导致判断是否滚动到底错误
             this.tableStyle = {
@@ -35,15 +35,8 @@ const withMasonryLayout = Component => {
                 width: COLUMN_WIDTH + 'rem',
             };
 
-            this.layouts = {};
-            this.layouts[this.columnNo] = {
-                itemIndexMatrix: [...Array(this.columnNo)].map(() => []), // 二维数组，存的是每列包含的那部分xs的indexInAllXs
-                columnHeights: Array(this.columnNo).fill(0), // 一维数组，每列的高度。
-                lastItemIndex: -1,
-            };
-
             this.state = {
-                itemIndexMatrix: this.layouts[this.columnNo].itemIndexMatrix
+                itemIndexMatrix: this.layout.itemIndexMatrix
             };
         }
 
@@ -51,11 +44,17 @@ const withMasonryLayout = Component => {
             let completeColumnNo = Math.floor((window.innerWidth - 2 * HALF_GAP * this.htmlFontSize)
                 / (COLUMN_WIDTH * this.htmlFontSize));
             // 最小也得是一列，不能返回0列
-            // return completeColumnNo === 0 ? 1 : completeColumnNo;
-            return 3;
+            return completeColumnNo === 0 ? 1 : completeColumnNo;
         }
 
         get layout() {
+            if (this.layouts[this.columnNo] === undefined) {
+                this.layouts[this.columnNo] = {
+                    itemIndexMatrix: [...Array(this.columnNo)].map(() => []), // 二维数组，存的是每列包含的那部分xs的indexInAllXs
+                    columnHeights: Array(this.columnNo).fill(0), // 一维数组，每列的高度。
+                    lastItemIndex: -1,
+                };
+            }
             return this.layouts[this.columnNo];
         }
 
@@ -70,7 +69,8 @@ const withMasonryLayout = Component => {
         };
 
         addItem = item => {
-            this.layout.itemIndexMatrix[this.shortestColumnIndex].push(this.items.push(item) - 1);
+            this.layout.lastItemIndex = this.items.push(item) - 1;
+            this.layout.itemIndexMatrix[this.shortestColumnIndex].push(this.layout.lastItemIndex);
             this.setState(prevState => prevState);
         };
 
@@ -83,22 +83,23 @@ const withMasonryLayout = Component => {
             // +2的原因是，缩放以后，这三个值会四舍五入，比如应该是0.3+0.3>=0.6，四舍五入以后变成0+0!>=1
             if ((window.innerHeight + window.scrollY + 2) >= document.body.clientHeight) {
                 // remove不存在的eventListener不会报错
-                window.removeEventListener('scroll', this.handleWindowEvent)
-                // this.props.getXs(this.page++, PAGE_SIZE).then(response => {
+                window.removeEventListener('scroll', this.handleWindowEvent);
+                // this.props.getXs(this.nextPage++, PAGE_SIZE).then(response => {
                 this.props.getXs(0, PAGE_SIZE).then(response => {
                     response.xs.forEach((x) => {
                         this.addItem(x);
                     });
                     // 相同事件，相同callback的多次addEventListener只会被加一次
-                    window.addEventListener('scroll', this.handleWindowEvent)
+                    window.addEventListener('scroll', this.handleWindowEvent);
                     this.getXsWhenReachBottom();
                 });
             }
-        }
+        };
 
         componentDidMount() {
             this.getXsWhenReachBottom();
             ['resize', 'scroll'].forEach(e => window.addEventListener(e, this.handleWindowEvent));
+            this.prevColumnNo = this.columnNo;
         }
 
         componentWillUnmount() {
@@ -111,11 +112,26 @@ const withMasonryLayout = Component => {
                     this.getXsWhenReachBottom();
                     break;
                 case "resize":
-                    // TODO: 完成resize
-                    console.log('resize');
+                    clearTimeout(this.resizeDone);
+                    // RESIZE_DONE_TIMEOUT(例如100)ms没有resize以后再重新布局；
+                    this.resizeDone = setTimeout(this.renderOnResizeDone, RESIZE_DONE_TIMEOUT);
                     break;
                 default:
                     console.log("no such event.");
+            }
+        };
+
+        renderOnResizeDone = () => {
+            if (this.columnNo !== this.prevColumnNo) {
+                if (this.layout.lastItemIndex + 1 < this.items.length) {
+                    for (let i = this.layout.lastItemIndex + 1; i < this.items.length; i++) {
+                        this.layout.lastItemIndex = i - 1;
+                        this.layout.itemIndexMatrix[this.shortestColumnIndex].push(i);
+                        this.setState(() => ({itemIndexMatrix: this.layout.itemIndexMatrix}));
+                    }
+                }
+                this.getXsWhenReachBottom();
+                this.prevColumnNo = this.columnNo;
             }
         };
 
