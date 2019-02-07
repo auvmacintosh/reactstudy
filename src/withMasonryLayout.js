@@ -13,8 +13,6 @@ const withMasonryLayout = Component => {
     class ComponentWithMasonryLayout extends React.Component {
         constructor(props) {
             super(props);
-            this.htmlFontSize = window.getComputedStyle(document.documentElement)
-                .fontSize.slice(0, -2); // normally is 16
             this.items = []; // 一维数组，记录的是所有的items
             this.itemHeights = [];
             this.layouts = {};
@@ -23,12 +21,6 @@ const withMasonryLayout = Component => {
             this.resizeDone = -1;
 
             // table不能定义margin，会跟body margin collapse，导致判断是否滚动到底错误
-            this.tableStyle = {
-                display: 'flex',
-                justifyContent: 'center',
-                padding: HALF_GAP + 'rem',
-                minWidth: (COLUMN_WIDTH * this.columnNo) + 'rem',
-            };
             this.columnStyle = {
                 display: 'flex',
                 flexDirection: 'column',
@@ -36,13 +28,21 @@ const withMasonryLayout = Component => {
             };
 
             this.state = {
-                itemIndexMatrix: this.layout.itemIndexMatrix
+                itemIndexMatrix: this.layout.itemIndexMatrix,
+                tableStyle: {
+                    display: 'flex',
+                    justifyContent: 'center',
+                    padding: HALF_GAP + 'rem',
+                    minWidth: (COLUMN_WIDTH * this.columnNo) + 'rem',
+                }
             };
         }
 
         get columnNo() {
-            let completeColumnNo = Math.floor((window.innerWidth - 2 * HALF_GAP * this.htmlFontSize)
-                / (COLUMN_WIDTH * this.htmlFontSize));
+            let htmlFontSize = window.getComputedStyle(document.documentElement)
+                .fontSize.slice(0, -2);
+            let completeColumnNo = Math.floor((window.innerWidth - 2 * HALF_GAP * htmlFontSize)
+                / (COLUMN_WIDTH * htmlFontSize));
             // 最小也得是一列，不能返回0列
             return completeColumnNo === 0 ? 1 : completeColumnNo;
         }
@@ -123,12 +123,33 @@ const withMasonryLayout = Component => {
 
         renderOnResizeDone = () => {
             if (this.columnNo !== this.prevColumnNo) {
+                // console.log('1: '+ this.columnNo);
                 if (this.layout.lastItemIndex + 1 < this.items.length) {
+                    // console.log('2:' + this.layout.lastItemIndex +' '+ this.items.length);
                     for (let i = this.layout.lastItemIndex + 1; i < this.items.length; i++) {
-                        this.layout.lastItemIndex = i - 1;
+                        // console.log('3');
+                        this.layout.lastItemIndex = i;
                         this.layout.itemIndexMatrix[this.shortestColumnIndex].push(i);
-                        this.setState(() => ({itemIndexMatrix: this.layout.itemIndexMatrix}));
+                        this.setState(() => ({
+                            itemIndexMatrix: this.layout.itemIndexMatrix,
+                            tableStyle: {
+                                display: 'flex',
+                                justifyContent: 'center',
+                                padding: HALF_GAP + 'rem',
+                                minWidth: (COLUMN_WIDTH * this.columnNo) + 'rem',
+                            }
+                        }));
                     }
+                } else {
+                    this.setState(() => ({
+                        itemIndexMatrix: this.layout.itemIndexMatrix,
+                        tableStyle: {
+                            display: 'flex',
+                            justifyContent: 'center',
+                            padding: HALF_GAP + 'rem',
+                            minWidth: (COLUMN_WIDTH * this.columnNo) + 'rem',
+                        }
+                    }));
                 }
                 this.getXsWhenReachBottom();
                 this.prevColumnNo = this.columnNo;
@@ -136,7 +157,7 @@ const withMasonryLayout = Component => {
         };
 
         Table = columns => (
-            <div style={this.tableStyle}>
+            <div style={this.state.tableStyle}>
                 {columns}
             </div>
         );
