@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import * as R from "ramda";
 
 const COLUMN_WIDTH = 20; // rem
+const MIN_COLUMN_NO = 2; // 最少这么多列
 const HALF_GAP = 0.8; // rem
 const PAGE_SIZE = 10; // 每次拉到底的page size，本来想第一次刷新多一些，后拉发现page no不好算
 const RESIZE_DONE_TIMEOUT = 100; // 这么多ms没有resize以后才会开始重新布局
@@ -44,7 +45,7 @@ const withMasonryLayout = Component => {
             let completeColumnNo = Math.floor((window.innerWidth - 2 * HALF_GAP * htmlFontSize)
                 / (COLUMN_WIDTH * htmlFontSize));
             // 最小也得是一列，不能返回0列
-            return completeColumnNo === 0 ? 1 : completeColumnNo;
+            return Math.max(MIN_COLUMN_NO, completeColumnNo);
         }
 
         get layout() {
@@ -70,6 +71,7 @@ const withMasonryLayout = Component => {
 
         addItem = item => {
             this.layout.lastItemIndex = this.items.push(item) - 1;
+            // itemIndexMatrix能改，我觉得是因为是shadow freeze的，这个得再试试。另外react应该不推荐这个写法。
             this.layout.itemIndexMatrix[this.shortestColumnIndex].push(this.layout.lastItemIndex);
             this.setState(prevState => prevState);
         };
@@ -84,8 +86,8 @@ const withMasonryLayout = Component => {
             if ((window.innerHeight + window.scrollY + 2) >= document.body.clientHeight) {
                 // remove不存在的eventListener不会报错
                 window.removeEventListener('scroll', this.handleWindowEvent);
-                // this.props.getXs(this.nextPage++, PAGE_SIZE).then(response => {
-                this.props.getXs(0, PAGE_SIZE).then(response => {
+                this.props.getXs(this.nextPage++, PAGE_SIZE).then(response => {
+                    // this.props.getXs(0, PAGE_SIZE).then(response => {
                     response.xs.forEach((x) => {
                         this.addItem(x);
                     });
@@ -97,8 +99,10 @@ const withMasonryLayout = Component => {
         };
 
         componentDidMount() {
-            this.getXsWhenReachBottom();
+            if (this.items.length === 0) {
+                this.getXsWhenReachBottom();
             ['resize', 'scroll'].forEach(e => window.addEventListener(e, this.handleWindowEvent));
+            }
             this.prevColumnNo = this.columnNo;
         }
 
@@ -128,29 +132,24 @@ const withMasonryLayout = Component => {
                     // console.log('2:' + this.layout.lastItemIndex +' '+ this.items.length);
                     for (let i = this.layout.lastItemIndex + 1; i < this.items.length; i++) {
                         // console.log('3');
+                        let shortestColumnIndex = this.shortestColumnIndex;
+                        this.layout.itemIndexMatrix[shortestColumnIndex].push(i);
+                        this.layout.columnHeights[shortestColumnIndex] += this.itemHeights[i];
                         this.layout.lastItemIndex = i;
-                        this.layout.itemIndexMatrix[this.shortestColumnIndex].push(i);
-                        this.setState(() => ({
-                            itemIndexMatrix: this.layout.itemIndexMatrix,
-                            tableStyle: {
-                                display: 'flex',
-                                justifyContent: 'center',
-                                padding: HALF_GAP + 'rem',
-                                minWidth: (COLUMN_WIDTH * this.columnNo) + 'rem',
-                            }
-                        }));
+                        console.log(`${i}: ${(this.layout.columnHeights)}`)
                     }
-                } else {
-                    this.setState(() => ({
-                        itemIndexMatrix: this.layout.itemIndexMatrix,
-                        tableStyle: {
-                            display: 'flex',
-                            justifyContent: 'center',
-                            padding: HALF_GAP + 'rem',
-                            minWidth: (COLUMN_WIDTH * this.columnNo) + 'rem',
-                        }
-                    }));
                 }
+                let a = this.layout.columnHeights;
+                this.setState(() => ({
+                    itemIndexMatrix: this.layout.itemIndexMatrix,
+                    tableStyle: {
+                        display: 'flex',
+                        justifyContent: 'center',
+                        padding: HALF_GAP + 'rem',
+                        minWidth: (COLUMN_WIDTH * this.columnNo) + 'rem',
+                    }
+                }));
+                this.layout.columnHeights=a;
                 this.getXsWhenReachBottom();
                 this.prevColumnNo = this.columnNo;
             }
