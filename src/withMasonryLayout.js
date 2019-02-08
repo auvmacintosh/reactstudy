@@ -6,7 +6,7 @@ const COLUMN_WIDTH = 20; // rem
 const MIN_COLUMN_NO = 2; // 最少这么多列
 const HALF_GAP = 0.8; // rem
 const PAGE_SIZE = 10; // 每次拉到底的page size，本来想第一次刷新多一些，后拉发现page no不好算
-const RESIZE_DONE_TIMEOUT = 100; // 这么多ms没有resize以后才会开始重新布局
+const RESIZE_DONE_TIMEOUT = 1000; // 这么多ms没有resize以后才会开始重新布局
 
 const idxMp = R.addIndex(R.map);
 
@@ -113,7 +113,7 @@ const withMasonryLayout = Component => {
         handleWindowEvent = (e) => {
             switch (e.type) {
                 case "scroll":
-                    this.getXsWhenReachBottom();
+                    // this.getXsWhenReachBottom();
                     break;
                 case "resize":
                     clearTimeout(this.resizeDone);
@@ -150,7 +150,7 @@ const withMasonryLayout = Component => {
                     }
                 }));
                 this.layout.columnHeights=a;
-                this.getXsWhenReachBottom();
+                // this.getXsWhenReachBottom();
                 this.prevColumnNo = this.columnNo;
             }
         };
