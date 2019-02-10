@@ -6,7 +6,7 @@ class TestKeyTable extends React.Component {
     constructor(props) {
         super(props);
         // this.state = {table: [[1, 2], [3, 4]]};
-        this.state = {table: [[1,2], [3,4]]};
+        this.state = {table: [[1, 2], [3, 4]], a: 1};
     }
 
     componentDidMount() {
@@ -14,22 +14,28 @@ class TestKeyTable extends React.Component {
     }
 
     handleClick1 = () => {
-        this.setState({table: [[1,3], [2,4]]});
+        this.state = {table: [[1, 3], [2, 4]], a: 2};
+        console.log(this.props.a)
+        this.props.a.b=2;
+        this.setState((s,p)=>{
+            console.log(s);
+            console.log(p);
+        });
     }
 
     handleClick2 = () => {
-        this.setState({table: [[1,2], [3,4]]});
+        this.setState({table: [[1, 2], [3, 4]]});
     }
 
     render() {
         return (
             <>
                 {R.map(R.map(
-                x => {
-                         return <TestKeyItem key={x}>{x}</TestKeyItem>
-                     }
+                    x => {
+                        return <TestKeyItem key={x}>{x}</TestKeyItem>
+                    }
                 ))(this.state.table)}
-                <button onClick={this.handleClick1}>change order</button>
+                <button onClick={this.handleClick1}>{this.state.a}</button>
                 <button onClick={this.handleClick2}>change order</button>
             </>
         )

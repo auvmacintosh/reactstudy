@@ -41,7 +41,7 @@ class App extends React.Component {
 
         // return <Loader/>
 
-        return <TestKeyTable></TestKeyTable>
+        return <TestKeyTable a={{b:1}}></TestKeyTable>
         // return (
         //     <this.BlockWithMasonryWithRest/>
         // )
