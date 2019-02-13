@@ -111,9 +111,10 @@ const withMasonryLayout = Component => {
         }
 
         handleWindowEvent = (e) => {
+            e.preventDefault();
             switch (e.type) {
                 case "scroll":
-                    // this.getXsWhenReachBottom();
+                    this.getXsWhenReachBottom();
                     break;
                 case "resize":
                     clearTimeout(this.resizeDone);
