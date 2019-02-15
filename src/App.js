@@ -41,11 +41,11 @@ class App extends React.Component {
 
         // return <Loader/>
 
-        // return (
-        //     <this.BlockWithMasonryWithRest/>
-        // )
+        return (
+            <this.BlockWithMasonryWithRest/>
+        )
 
-        return (<Test></Test>)
+        // return (<Test></Test>)
     }
 }
 

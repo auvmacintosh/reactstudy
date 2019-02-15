@@ -156,19 +156,19 @@ const withMasonryLayout = Component => {
             }
         };
 
-        Table = columns => (
+        table = columns => (
             <div style={this.state.tableStyle}>
                 {columns}
             </div>
         );
 
-        Column = (items, i) => (
+        column = (items, i) => (
             <div key={i} style={this.columnStyle}>
                 {items}
             </div>
         );
 
-        Item = (item, i) => (
+        item = (item, i) => (
             <ItemClass key={i} setHeight={this.setHeight}>
                 <Component item={item}/>
             </ItemClass>
@@ -177,14 +177,13 @@ const withMasonryLayout = Component => {
         // map(f)就是一层递归，也就是对Array里的每个元素使用f函数
         // map(map(f))就是两层递归
         Assembly = R.compose( // compose的作用就是把下边的函数串联起来
-            this.Table, // 打包一个table
-            idxMp(this.Column), // 打包n个列
-            R.map(idxMp(this.Item)), // 打包n*m个Item
+            this.table, // 打包一个table
+            idxMp(this.column), // 打包n个列
+            R.map(idxMp(this.item)), // 打包n*m个Item，这两层map可以优化成map(compose(a,b))
             R.map(R.map(this.getItem)) // 根据index查出对应的对象
         );
 
-        // 输入是一个n*m维的矩阵，每个元素都是index
-
+        // 输入itemIndexMatrix是一个n*m维的矩阵，每个元素都是index
         render() {
             return (
                 <>
