@@ -1,48 +1,83 @@
 import React from 'react';
 import * as R from 'ramda';
 
+class Item extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {age: 10};
+        this.temp=1;
+        console.log(this)
+    }
+
+    render() {
+        return (
+            <div>
+                <div>
+                    {this.props.name} {this.state.age}
+                </div>
+            </div>
+        )
+    }
+}
+
+let a = <Item key='1' name='wangbo'>Yes</Item>;
+class Test extends React.Component {
+    constructor(props) {
+        super(props);
+        this.ref = React.createRef();
+        this.state = {fuck:1}
+    }
+
+    render() {
+        // return <div ref={this.ref}>wangbo</div>;
+        return a;
+    }
+}
+console.log(a)
+console.log(<Test ref='ref' key='1'/>);
+
 // 测试目的：二维数组，我希望跨列交换element的时候，不触发componentDidMount。
 // 我想到能影响React判断一个Item是不是不用remount的依据，无非就是key和reference（就是React Element这个object的reference）
 // 所以做了以下测试：
 // 1. 保持跨列交换的时候Key不变，不行，还是触发componentDidMount；
 // 2. 保持key和reference都不变，不行，还是触发componentDidMount。
-class Test extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
-
-    handler = (e) => {
-        e.preventDefault();
-    };
-
-    handleChange = ({target}) => {
-        console.log(this.state);
-        return this.setState({[target.name]: target.value});
-    }
-
-    render() {
-        console.log(this.state.ta)
-        return (
-            <>
-                <label>
-                    Essay:
-                    <textarea name='ta' value={this.state.ta} onChange={this.handleChange} />
-                </label>
-            </>
-        )
-    }
-}
-
-class Item extends React.Component {
-    componentDidMount() {
-        console.log("item did mount");
-    }
-
-    render() {
-        return <div>{this.props.x}</div>
-    }
-}
+// class Test extends React.Component {
+//     constructor(props) {
+//         super(props);
+//         this.state = {};
+//     }
+//
+//     handler = (e) => {
+//         e.preventDefault();
+//     };
+//
+//     handleChange = ({target}) => {
+//         console.log(this.state);
+//         return this.setState({[target.name]: target.value});
+//     }
+//
+//     render() {
+//         console.log(this.state.ta)
+//         return (
+//             <>
+//                 <label>
+//                     Essay:
+//                     <textarea name='ta' value={this.state.ta} onChange={this.handleChange} />
+//                 </label>
+//             </>
+//         )
+//     }
+// }
+//
+// class Item extends React.Component {
+//     componentDidMount() {
+//         console.log("item did mount");
+//     }
+//
+//     render() {
+//         return <div>{this.props.x}</div>
+//     }
+// }
 
 // function WarningBanner({warn}) {
 //     if (!warn) {
