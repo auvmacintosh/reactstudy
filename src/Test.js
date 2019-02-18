@@ -5,14 +5,14 @@ class Item extends React.Component {
     constructor(props) {
         super(props);
         this.state = {age: 10};
-        this.temp=1;
-        console.log(this)
+        // this.myRef = React.createRef();
     }
 
     render() {
+        console.log(this)
         return (
             <div>
-                <div>
+                <div id='test' style={{fontSize: '20px'}} ref={this.props.childRef}>
                     {this.props.name} {this.state.age}
                 </div>
             </div>
@@ -20,21 +20,27 @@ class Item extends React.Component {
     }
 }
 
-let a = <Item key='1' name='wangbo'>Yes</Item>;
 class Test extends React.Component {
     constructor(props) {
         super(props);
-        this.ref = React.createRef();
-        this.state = {fuck:1}
+        this.ItemEL = React.createRef();
     }
 
+    handler = (e) => {
+        this.ItemEL.current.style.fontSize='100px';
+    };
+
     render() {
-        // return <div ref={this.ref}>wangbo</div>;
-        return a;
+        console.log(this)
+        return (
+            <>
+                <Item name='wangbo' childRef={this.ItemEL}/>
+                <button onClick={this.handler}>cc</button>
+            </>
+        )
+
     }
 }
-console.log(a)
-console.log(<Test ref='ref' key='1'/>);
 
 // 测试目的：二维数组，我希望跨列交换element的时候，不触发componentDidMount。
 // 我想到能影响React判断一个Item是不是不用remount的依据，无非就是key和reference（就是React Element这个object的reference）
