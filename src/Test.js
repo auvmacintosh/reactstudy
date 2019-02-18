@@ -1,42 +1,37 @@
 import React from 'react';
 import * as R from 'ramda';
 
-class Item extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {age: 10};
-        // this.myRef = React.createRef();
-    }
+const context = React.createContext('wangbo');
+console.log(context)
 
+class Item extends React.Component {
+    static contextType = context;
     render() {
-        console.log(this)
         return (
             <div>
-                <div id='test' style={{fontSize: '20px'}} ref={this.props.childRef}>
-                    {this.props.name} {this.state.age}
-                </div>
+                {this.context}
             </div>
         )
     }
 }
 
+
 class Test extends React.Component {
     constructor(props) {
         super(props);
-        this.ItemEL = React.createRef();
+        this.ItemEl = React.createRef();
     }
 
     handler = (e) => {
-        this.ItemEL.current.style.fontSize='100px';
+        this.ItemEl.current.style.fontSize = '100px';
     };
 
     render() {
-        console.log(this)
         return (
-            <>
-                <Item name='wangbo' childRef={this.ItemEL}/>
+            <context.Provider>
+                <Item/>
                 <button onClick={this.handler}>cc</button>
-            </>
+            </context.Provider>
         )
 
     }
