@@ -1,16 +1,17 @@
 import React from 'react';
 import * as R from 'ramda';
 
-const context = React.createContext('wangbo');
-console.log(context)
+const NameContext = React.createContext('wangbo');
+console.log(NameContext);
 
 class Item extends React.Component {
-    static contextType = context;
+    // static contextType = NameContext;
     render() {
+        console.log(this)
         return (
-            <div>
-                {this.context}
-            </div>
+            <NameContext.Consumer>
+                {x=><div>{x}</div>}
+            </NameContext.Consumer>
         )
     }
 }
@@ -28,10 +29,10 @@ class Test extends React.Component {
 
     render() {
         return (
-            <context.Provider>
+            <NameContext.Provider value='hn'>
                 <Item/>
                 <button onClick={this.handler}>cc</button>
-            </context.Provider>
+            </NameContext.Provider>
         )
 
     }
