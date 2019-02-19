@@ -10,7 +10,7 @@ import * as R from 'ramda';
 import 'normalize.css';
 import './last';
 // import {ReactComponent as Loader} from './Loader1.svg'
-import Test from './Test';
+import Container from './Container';
 
 class App extends React.Component {
     // 使用function版的setState可以保证synchronize，而且可以使用prevState。
@@ -45,7 +45,7 @@ class App extends React.Component {
         //     <this.BlockWithMasonryWithRest/>
         // )
 
-        return (<Test></Test>)
+        return (<Container></Container>)
     }
 }
 

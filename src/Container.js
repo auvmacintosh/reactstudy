@@ -1,40 +1,66 @@
 import React from 'react';
 import * as R from 'ramda';
 
-const NameContext = React.createContext('wangbo');
-console.log(NameContext);
+// createContext后边的参数是default value，这个值只有在没有provider的时候才会有用，实际就是在测试的时候有用。
+const NameContext = React.createContext({name: 'defaultName'});
+const AgeContext = React.createContext();
 
-class Item extends React.Component {
-    // static contextType = NameContext;
+// 这种方法，可以subscribe多个context，而且function或者class Component都可以使用。
+let Item1 = (props) => (
+    <NameContext.Consumer>
+        {value => <div>{value.name}</div>}
+    </NameContext.Consumer>
+)
+
+// subscribe多个context例子
+class Item2 extends React.Component {
     render() {
-        console.log(this)
         return (
             <NameContext.Consumer>
-                {x=><div>{x}</div>}
+                {state => (
+                    <AgeContext.Consumer>
+                        {age => <div>{state.name}{age}</div>}
+                    </AgeContext.Consumer>
+                )}
             </NameContext.Consumer>
         )
     }
 }
 
+// 这种方法，只能subscribe一个context，但只能用在class component上
+class Item3 extends React.Component {
+    // static contextType = NameContext;
+    render() {
+        return <div>{this.context.name}</div>
+    }
+}
+Item3.contextType = NameContext;
 
-class Test extends React.Component {
+// 如果Item需要更新Container的state，可以把这个方法放在state里用context传过去
+class Container extends React.Component {
     constructor(props) {
         super(props);
-        this.ItemEl = React.createRef();
+        this.state = {name: 'wangbo'}
     }
 
     handler = (e) => {
-        this.ItemEl.current.style.fontSize = '100px';
+        this.setState({name: 'hunan'});
     };
 
     render() {
         return (
-            <NameContext.Provider value='hn'>
-                <Item/>
-                <button onClick={this.handler}>cc</button>
+            // Provider必须提供value,
+            // 注意在value里只能使用primitive，如果value={{a:10}}这种，每次re-render Container，都会新建
+            // value这个object，导致reference变了，导致进一步触发re-render所有consumer
+            <NameContext.Provider value={this.state}>
+                <AgeContext.Provider value={10}>
+                    <Item1/>
+                    <Item2/>
+                    <Item3/>
+                    <button onClick={this.handler}>cc</button>
+                </AgeContext.Provider>
             </NameContext.Provider>
         )
-
     }
 }
 
@@ -43,7 +69,7 @@ class Test extends React.Component {
 // 所以做了以下测试：
 // 1. 保持跨列交换的时候Key不变，不行，还是触发componentDidMount；
 // 2. 保持key和reference都不变，不行，还是触发componentDidMount。
-// class Test extends React.Component {
+// class Container extends React.Component {
 //     constructor(props) {
 //         super(props);
 //         this.state = {};
@@ -89,7 +115,7 @@ class Test extends React.Component {
 //     return <div>Warning</div>;
 // }
 //
-// class Test extends React.Component {
+// class Container extends React.Component {
 //     constructor(props) {
 //         super(props);
 //         this.state = {warn: true};
@@ -110,7 +136,7 @@ class Test extends React.Component {
 // }
 
 
-// class Test extends React.Component {
+// class Container extends React.Component {
 //     constructor(props) {
 //         super(props);
 //         this.state = {a: {b: {c:1}}};
@@ -147,7 +173,7 @@ class Test extends React.Component {
 //     }
 // }
 //
-// class Test extends React.Component {
+// class Container extends React.Component {
 //     constructor(props) {
 //         super(props);
 //         this.state = {
@@ -176,4 +202,4 @@ class Test extends React.Component {
 //     }
 // }
 
-export default Test;
+export default Container;
