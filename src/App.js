@@ -12,6 +12,7 @@ import './last';
 // import {ReactComponent as Loader} from './Loader1.svg'
 import ParentComponent from './Parent';
 import Child from './Child';
+import FileInput from './FileInput'
 
 class App extends React.Component {
     // 使用function版的setState可以保证synchronize，而且可以使用prevState。
@@ -47,11 +48,13 @@ class App extends React.Component {
         // )
 
         // return (<ParentComponent><Child /></ParentComponent>)
-        return (
-            <div>
-                <ParentComponent />
-            </div>
-        )
+        // return (
+        //     <div>
+        //         <ParentComponent />
+        //     </div>
+        // )
+
+        return <FileInput/>
     }
 }
 
