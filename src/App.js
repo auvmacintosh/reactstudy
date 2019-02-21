@@ -2,7 +2,7 @@ import React from 'react';
 // import Post from './Post';
 // import CommentBox from './CommentBox';
 // import style from './App.module.css'
-// import Login from './Login'
+import Login from './Login'
 import withRestResources from './withRestResources'
 import RandomColorBlock from "./RandomColorBlock";
 import withMasonryLayout from "./withMasonryLayout";
@@ -39,7 +39,7 @@ class App extends React.Component {
         //     </div>
         // )
 
-        // return <Login></Login>
+        return <Login></Login>
 
         // return <Loader/>
 
@@ -54,7 +54,7 @@ class App extends React.Component {
         //     </div>
         // )
 
-        return <FileInput/>
+        // return <FileInput/>
     }
 }
 
