@@ -8,10 +8,10 @@ class CreateComment extends React.Component {
     }
 
     // 用target.name处理所有input，这样就不用每个input一个handler了。
-    // handleChange = (e) => this.setState({[e.target.name]: e.target.value});
+    // handleChange = (e) => this.setState({[e.target.name]: e.target.CStateValue});
 
     // destructuring parameter
-    handleChange = ({target}) => this.setState({[target.name]: target.value});
+    handleChange = ({target}) => this.setState({[target.name]: target.CStateValue});
 
     handleSubmit = (e) => {
         e.preventDefault();

@@ -1,60 +1,74 @@
 import React from 'react';
-// import Post from './Post';
-// import CommentBox from './CommentBox';
-// import style from './App.module.css'
-import Login from './Login'
-import withRestResources from './withRestResources'
-import RandomColorBlock from "./RandomColorBlock";
-import withMasonryLayout from "./withMasonryLayout";
-import * as R from 'ramda';
 import 'normalize.css';
-import './last';
-// import {ReactComponent as Loader} from './Loader1.svg'
-import ParentComponent from './Parent';
-import Child from './Child';
-import FileInput from './FileInput'
 
-class App extends React.Component {
-    // 使用function版的setState可以保证synchronize，而且可以使用prevState。
-    // appendComment = (newComment) => {
-    //     this.setState(prevState => ({comments: prevState.comments.concat(newComment)}));
-    // }
+export const Context = React.createContext();
 
-    // PostWithData =
-    //     withRestResources('http://localhost:3000/staticapi/post')(Post);
-    // CommentListWithData =
-    //     withRestResources('http://localhost:3000/staticapi/comments')(CommentBox);
+class C1 extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {s: 1}
+    }
 
-    BlockWithMasonryWithRest = R.compose(
-        withRestResources("http://localhost:8080/api/articles"),
-        withMasonryLayout
-    )(RandomColorBlock);
+    handler = (e) => {
+        this.setState(ps => ({s: ps.s + 1}))
+    };
 
     render() {
-        // return (
-        //     <div className={style.container}>
-        //         <div className={style.brace}/>
-        //         <PostWithData />
-        //         <CommentListWithData />
-        //     </div>
-        // )
+        console.log('C1')
+        return (
+            <>
+                <button onClick={this.handler}>C1 {this.state.s}</button>
+                <Context.Provider value={this.state.s}>
+                    {this.props.children}
+                </Context.Provider>
+            </>
+        )
+    }
+}
 
-        return <Login></Login>
+class C2 extends React.Component {
+    shouldComponentUpdate(nextProps, nextState) {
+        return true;
+    }
 
-        // return <Loader/>
+    render() {
+        console.log('C2')
+        return (
+            <div>C2
+                <C3/>
+            </div>
+        )
+    }
 
-        // return (
-        //     <this.BlockWithMasonryWithRest/>
-        // )
+}
 
-        // return (<ParentComponent><Child /></ParentComponent>)
-        // return (
-        //     <div>
-        //         <ParentComponent />
-        //     </div>
-        // )
+class C3 extends React.Component {
+    render() {
+        console.log('C3')
+        return (
+            <Context.Consumer>
+                {value => <C4/>}
+            </Context.Consumer>
+        )
+    }
+}
 
-        // return <FileInput/>
+class C4 extends React.Component {
+    render() {
+        console.log('C4')
+        return <div>C4</div>
+    }
+}
+
+class App extends React.Component {
+    render() {
+        return (
+            <>
+                <C1>
+                    <C2/>
+                </C1>
+            </>
+        )
     }
 }
 
