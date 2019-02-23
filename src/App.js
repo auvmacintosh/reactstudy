@@ -1,6 +1,5 @@
 import React from 'react';
 import 'normalize.css';
-import ReactDOM from "react-dom";
 
 let log = console.log.bind(console);
 
@@ -30,7 +29,12 @@ class Item extends React.Component {
         log(this.name + ' did mount')
     }
 
+    shouldComponentUpdate(np, ns) {
+        return this.props.name !== np.name;
+    }
+
     render() {
+        log(this.name + ' render')
         return <div>{this.props.name}</div>
     }
 }
@@ -38,32 +42,17 @@ class Item extends React.Component {
 class App extends React.Component {
     constructor(props) {
         super(props);
-        this.el1 = document.getElementById('d1');
-        this.el2 = document.getElementById('d2');
-        this.state = {
-            xs: [
-                {name: '1', container: this.el1},
-                {name: '2', container: this.el2},
-            ]
-        }
+        this.state = {xs: [1, 2, 3, 4, 5]}
     }
 
     handler = () => {
-        this.setState(
-            {
-                xs: [
-                    {name: '1', container: this.el2},
-                    {name: '2', container: this.el1},
-                ]
-            }
-        )
+        this.setState({xs: [5, 1, 2, 3, 4]})
     }
 
     render() {
         return (
             <>
-                {this.state.xs.map(x => ReactDOM.createPortal(<Item name={x.name}/>, x.container)
-                )}
+                {this.state.xs.map(x => <Item key={x} name={x}/>)}
                 <button onClick={this.handler}>Click</button>
             </>
         )
