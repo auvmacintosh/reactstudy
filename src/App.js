@@ -5,6 +5,11 @@ let log = console.log.bind(console);
 
 class Item extends React.Component {
 
+    constructor(props) {
+        super(props);
+        this.state={};
+    }
+
     get name() {
         return this.constructor.name + this.props.name;
     }
@@ -30,7 +35,9 @@ class Item extends React.Component {
     }
 
     shouldComponentUpdate(np, ns) {
-        return this.props.name !== np.name;
+        return !shallowCompare(np, this.props) || !shallowCompare(ns, this.state);
+        // return true;
+        // return false;
     }
 
     render() {
@@ -38,6 +45,12 @@ class Item extends React.Component {
         return <div>{this.props.name}</div>
     }
 }
+
+const shallowCompare = (obj1, obj2) =>
+    Object.keys(obj1).length === Object.keys(obj2).length &&
+    Object.keys(obj1).every(key =>
+        obj2.hasOwnProperty(key) && obj1[key] === obj2[key]
+    );
 
 class App extends React.Component {
     constructor(props) {
