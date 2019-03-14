@@ -1,88 +1,28 @@
 import React from 'react';
 import 'normalize.css';
-import {BrowserRouter as Router, Link, Route} from 'react-router-dom';
-
-let log = console.log.bind(console);
-
-const UserContext = React.createContext({username: null});
-const LocaleContext = React.createContext({language: 'en_US'});
 
 const App = () => {
-    const [user, setUser] = React.useState({username: null});
-    const [locale, setLocale] = React.useState({language: 'en_US'});
+    const [c1, setC1] = React.useState(1);
+    const [c2, setC2] = React.useState(1);
 
     return (
-        <Router>
-            <UserContext.Provider value={{...user, setUser: setUser}}>
-                <LocaleContext.Provider value={{...locale, setLocale: setLocale}}>
-                    {user.username === null ? <Login/> : <Home/>}
-                </LocaleContext.Provider>
-            </UserContext.Provider>
-        </Router>
+        <>
+            <div>{c1}</div>
+            <div>{c2}</div>
+            <B c1={c1} setC1={setC1}>C1</B>
+            <B c1={c2} setC1={setC2}>C2</B>
+        </>
     )
 };
 
-const Home = () => {
-    return <div>home</div>
-};
-
-const Login = () => {
-    const [username, setUsername] = React.useState('');
-    const [password, setPassword] = React.useState('');
-    const userContext = React.useContext(UserContext);
-    const xhr = new XMLHttpRequest();
+const B = React.memo(({c1, setC1, children}) => {
     React.useEffect(() => {
-        return () => xhr.abort();
-    }, []);
-
-    const handler = (e) => {
-        e.preventDefault();
-        switch (e.target.name) {
-            case 'username' :
-                setUsername(e.target.value);
-                break;
-            case 'password' :
-                setPassword(e.target.value);
-                break;
-            case 'login' :
-                xhr.onreadystatechange = () => {
-                    if (xhr.readyState === 4 && xhr.status === 200) {
-                        log('200')
-                        userContext.setUser({username: username})
-                    } else if (xhr.status === 302) {
-                        log('302')
-                    } else if (xhr.status === 403) {
-                        log('403')
-                    }
-                };
-                xhr.open('POST', 'http://localhost:8080/login', true);
-                xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
-                xhr.send(`username=${username}&password=${password}`);
-                break;
-            default :
-                log('no such handler ' + e.target.name);
-        }
-    };
-
-    return (
-        <form name='login' onSubmit={handler}>
-            <input
-                type='text'
-                name='username'
-                value={username}
-                onChange={handler}
-                placeholder='Username'
-            />
-            <input
-                type='password'
-                name='password'
-                value={password}
-                onChange={handler}
-                placeholder='Password'
-            />
-            <button type="submit">Login</button>
-        </form>
-    )
-};
+        console.log(children + ' effect happened'); // initial render, later render(后)的时候执行
+        return () => {
+            console.log(children + ' cleanup happened')
+        }; // later render(先)，unmount的时候执行
+    });
+    return <button onClick={() => setC1(c1 + 1)}>{children}</button>
+});
 
 export default App;
