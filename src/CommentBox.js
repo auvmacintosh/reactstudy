@@ -3,7 +3,7 @@ import Comment from './Comment';
 import PropTypes from "prop-types";
 import CreateComment from "./CreateComment"
 
-// default parameter could also put in the App.js, but I like this way.
+// default parameter could also put in the App-cushooks.jshooks.js, but I like this way.
 // array里的Component要有key attribute，不然报警
 
 class CommentBox extends React.Component {

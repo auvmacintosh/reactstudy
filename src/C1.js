@@ -1,5 +1,5 @@
 import React from 'react';
-import {Context} from './App';
+import {Context} from './App-cushooks';
 
 let C1 = (props) => (
     <Context.Consumer>
