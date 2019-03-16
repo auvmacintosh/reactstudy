@@ -1,5 +1,4 @@
 import React from 'react';
-import {Context} from './App-cushooks';
 
 let log = console.log.bind(console);
 
@@ -50,11 +49,9 @@ class C extends React.Component {
         return (
             <>
                 <button onClick={this.handler}>
-                    {this.name} {this.state.CStateValue}
+                    wangboC3
                 </button>
-                <Context.Provider value={this.state.CStateValue}>
                 {this.props.children}
-                </Context.Provider>
                 {/*<button onClick={this.handler}>App state updater</button>*/}
             </>
         )

@@ -1,20 +1,11 @@
 import React from 'react';
 import 'normalize.css';
-import B from './B'
-// const B = React.lazy(() => import('./B'));
-
-const getRandomColor = () => {
-    let letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-};
+// import B from './B'
+const B = React.lazy(() => import('./B'));
+const C = React.lazy(() => import('./C'));
 
 const App = () => {
     const [c1, setC1] = React.useState(1);
-    const [c2, setC2] = React.useState(1);
 
     const f = React.useRef(() => {
         console.log('run f')
@@ -22,11 +13,10 @@ const App = () => {
     return (
         <>
             <div>{c1}</div>
-            <div>{c2}</div>
             <React.Suspense fallback={<div>Loading...</div>}>
-                <B f={f.current} c1={c1} setC1={setC1}>wangboC1</B>
-                <B f={f.current} c1={c2} setC1={setC2}>wangboC2</B>
+                {c1 === 1 ? <B c={c1}/> : <C/>}
             </React.Suspense>
+            <button onClick={() => setC1(c1 + 1)}>change c1</button>
         </>
     )
 };
