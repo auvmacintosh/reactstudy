@@ -1,15 +1,15 @@
 import React from 'react';
 import 'normalize.css';
-// import B from './B'
+import worker from "./worker";
+import ReactWorker from "./ReactWorker";
+
 const B = React.lazy(() => import('./B'));
 const C = React.lazy(() => import('./C'));
 
+const myReactWorker = new ReactWorker(worker);
+myReactWorker.onmessage = (e) => {console.log(e.data)};
 const App = () => {
     const [c1, setC1] = React.useState(1);
-
-    const f = React.useRef(() => {
-        console.log('run f')
-    });
     return (
         <>
             <div>{c1}</div>
