@@ -1,24 +1,22 @@
-import React from 'react';
-import 'normalize.css';
-import worker from "./worker";
-import ReactWorker from "./ReactWorker";
+import React, {useReducer} from 'react';
 
-const B = React.lazy(() => import('./B'));
-const C = React.lazy(() => import('./C'));
+function App() {
+    // First render will create the state, and it will
+    // persist through future renders
+    const [sum, dispatch] = useReducer((sum, action) => {
+        console.log(action);
+        return sum + action;
+    }, 0);
 
-const myReactWorker = new ReactWorker(worker);
-myReactWorker.onmessage = (e) => {console.log(e.data)};
-const App = () => {
-    const [c1, setC1] = React.useState(1);
     return (
         <>
-            <div>{c1}</div>
-            <React.Suspense fallback={<div>Loading...</div>}>
-                {c1 === 1 ? <B c={c1}/> : <C/>}
-            </React.Suspense>
-            <button onClick={() => setC1(c1 + 1)}>change c1</button>
+            {sum}
+
+            <button onClick={() => dispatch(1)}>
+                Add 1
+            </button>
         </>
-    )
-};
+    );
+}
 
 export default App;
