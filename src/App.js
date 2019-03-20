@@ -1,20 +1,25 @@
-import React, {useReducer} from 'react';
+import React, {useState} from 'react';
+import B from './B'
 
-function App() {
-    // First render will create the state, and it will
-    // persist through future renders
-    const [sum, dispatch] = useReducer((sum, action) => {
-        console.log(action);
-        return sum + action;
-    }, 0);
-
+const App = ({page, children}) => {
+    const [status, setStatus] = useState('leave');
+    const handleMouseEnter = e => {
+        // e.preventDefault();
+        setStatus('enter');
+    };
+    const handleMouseLeave = e => {
+        // e.preventDefault();
+        setStatus('leave');
+    };
     return (
         <>
-            {sum}
-
-            <button onClick={() => dispatch(1)}>
-                Add 1
-            </button>
+            {children}
+            <a className={status}
+               href={page}
+               onMouseEnter={handleMouseEnter}
+               onMouseLeave={handleMouseLeave}
+            >{status}</a>
+            <B/>
         </>
     );
 }
