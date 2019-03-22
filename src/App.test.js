@@ -11,12 +11,8 @@ test('displays titles when clicking Search',
         axios.get.mockResolvedValue({data: a});
         const {getByText, getByTestId} = render(<App/>);
         fireEvent.click(getByText('Search'));
-        await wait(() => getByTestId('search-result'))
-
-        expect(axios.get).toHaveBeenCalledTimes(1)
-
-        expect(getByTestId('search-result')).toHaveTextContent('Linux')
-
-
+        await wait(() => getByTestId('search-result'));
+        expect(axios.get).toHaveBeenCalledTimes(1);
+        expect(getByTestId('search-result')).toHaveTextContent('Linux');
     }
 );
