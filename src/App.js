@@ -1,27 +1,33 @@
 import React, {useState} from 'react';
-import B from './B'
+import axios from 'axios';
 
-const App = ({page, children}) => {
-    const [status, setStatus] = useState('leave');
-    const handleMouseEnter = e => {
-        // e.preventDefault();
-        setStatus('enter');
+const renderItem = article => (
+    <h5 key={article._links.self.href}><a href={article._links.self.href}>{article.title}</a></h5>
+);
+
+const App = () => {
+    const [articles, setArticles] = useState([]);
+
+    const handleSearch = e => {
+        e.preventDefault();
+        axios.get('http://localhost:8080/api/articles').then(
+            // res=>console.log(res)
+            ({data: {_embedded: {articles}}}) => {
+                setArticles(articles);
+            }
+        ).catch(
+            (error) => {
+                console.log(error)
+            }
+        );
     };
-    const handleMouseLeave = e => {
-        // e.preventDefault();
-        setStatus('leave');
-    };
+
     return (
         <>
-            {children}
-            <a className={status}
-               href={page}
-               onMouseEnter={handleMouseEnter}
-               onMouseLeave={handleMouseLeave}
-            >{status}</a>
-            <B/>
+            <button name='searchButton' onClick={handleSearch}>Search</button>
+            <div data-testid="search-result">{articles.map(renderItem)}</div>
         </>
     );
-}
+};
 
 export default App;
