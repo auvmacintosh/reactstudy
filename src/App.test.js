@@ -3,10 +3,11 @@ import App from './App';
 import {render, fireEvent, wait} from 'react-testing-library';
 import axios from 'axios';
 import a from './articles.json';
+import {act} from 'react-dom/test-utils';
 
 jest.mock('axios');
 
-test('displays titles when clicking Search',
+xtest('displays titles when clicking Search',
     async () => {
         axios.get.mockResolvedValue({data: a});
         const {getByText, getByTestId} = render(<App/>);

@@ -10,7 +10,6 @@ const App = () => {
 
     const handleSearch = e => {
         e.preventDefault();
-        console.log(axios.get);
         axios.get('http://localhost:8080/api/articles').then(
             // res=>console.log(res)
             ({data: {_embedded: {articles}}}) => {
