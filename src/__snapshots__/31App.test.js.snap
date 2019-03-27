@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`snapshot 1`] = `
+Array [
+  "fuck",
+  <button
+    name="searchButton"
+    onClick={[Function]}
+  >
+    Search
+  </button>,
+  <div
+    data-testid="search-result"
+  />,
+]
+`;

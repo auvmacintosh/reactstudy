@@ -5,7 +5,7 @@ const renderItem = article => (
     <h5 key={article._links.self.href}><a href={article._links.self.href}>{article.title}</a></h5>
 );
 
-const App = () => {
+const App = ({fuck}) => {
     const [articles, setArticles] = useState([]);
 
     const handleSearch = e => {
@@ -24,6 +24,7 @@ const App = () => {
 
     return (
         <>
+            {fuck}
             <button name='searchButton' onClick={handleSearch}>Search</button>
             <div data-testid="search-result">{articles.map(renderItem)}</div>
         </>

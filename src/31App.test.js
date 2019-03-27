@@ -2,18 +2,27 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {act} from 'react-dom/test-utils'
 import App from './31App'
+import AppOld from './App'
+import renderer from 'react-test-renderer';
 
 test('should tick to a new value', () => {
     jest.useFakeTimers();
     const el = document.createElement('div');
     // act(() => {
-        ReactDOM.render(<App/>, el);
+    ReactDOM.render(<App/>, el);
     // })
     expect(el.innerHTML).toBe("0");
     act(() => {
         jest.runAllTimers();
     })
     expect(el.innerHTML).toBe('1');
+});
+
+test('snapshot', () => {
+    const component = renderer.create(<AppOld fuck='fuck'/>);
+    let tree = component.toJSON();
+    console.log(component.root);
+    expect(tree).toMatchSnapshot();
 })
 
 xtest('should increment counter', () => {
