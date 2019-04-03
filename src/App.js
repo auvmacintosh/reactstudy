@@ -17,10 +17,10 @@ const App = () => {
             }
         )
             .catch(
-            (error) => {
-                console.log(error)
-            }
-        );
+                (error) => {
+                    console.log(error)
+                }
+            );
     };
 
     return (
