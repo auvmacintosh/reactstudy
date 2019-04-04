@@ -2,44 +2,44 @@ import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
 import {act} from 'react-dom/test-utils';
 
-const App = () => {
-    const [x, setX] = useState('before');
-
-    const handler = (e) => {
-        e.preventDefault();
-        setTimeout(()=>{setX('after')},0);
-    };
-
-    return (
-        <>
-            <button id='setState' onClick={handler}>click</button>
-            <div id='state'>{x}</div>
-        </>
-    )
-};
-
-// class App extends React.Component {
-//     state = {x: 'before'};
+// const App = () => { // 跟下边的class是同样的功能，只是换了function的写法。test会报act错误，这是一个bug。
+//     const [x, setX] = useState('before');
 //
-//     handler = (e) => {
+//     const handler = (e) => {
 //         e.preventDefault();
-//         setTimeout(() => {
-//             this.setState({x: 'after'})
-//         }, 0);
-//     }
+//         setTimeout(()=>{setX('after')},0);
+//     };
 //
-//     render() {
-//         return (
-//             <>
-//                 <button id='setState' onClick={this.handler}>click</button>
-//                 <div id='state'>{this.state.x}</div>
-//             </>
-//         )
-//     }
-// }
+//     return (
+//         <>
+//             <button id='setState' onClick={handler}>click</button>
+//             <div id='state'>{x}</div>
+//         </>
+//     )
+// };
+
+class App extends React.Component {
+    state = {x: 'before'};
+
+    handler = (e) => {
+        e.preventDefault();
+        setTimeout(() => {
+            this.setState({x: 'after'})
+        }, 0);
+    }
+
+    render() {
+        return (
+            <>
+                <button id='setState' onClick={this.handler}>click</button>
+                <div id='state'>{this.state.x}</div>
+            </>
+        )
+    }
+}
 
 test('fire a event that will set state',
-    (done) => {
+    (done) => { // 如果不传done进去，setTimeout的callback就不会被执行。jest默认不执行test里的callback。对于Promise，用return
         let el = document.createElement('div');
         document.body.appendChild(el);
         act(() => {
@@ -49,7 +49,7 @@ test('fire a event that will set state',
             // Event，你的handler是Component的Event
             document.getElementById('setState').dispatchEvent(new MouseEvent('click', {bubbles: true}));
         });
-        setTimeout(() => {
+        setTimeout(() => { // 如果上边的event里有异步的任务需要执行，比如fetch，这里得把expect放到异步调用里去。
             expect(document.getElementById('state').innerHTML).toBe('after');
             done();
         }, 0);
