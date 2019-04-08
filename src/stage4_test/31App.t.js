@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {act} from 'react-dom/test-utils'
 import App from './31App'
-import AppOld from '../App'
+import AppOld from './App'
 import renderer from 'react-test-renderer';
 
 test('should tick to a new value', () => {
