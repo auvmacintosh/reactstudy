@@ -1,41 +1,35 @@
 import React from 'react';
 import ReactDom from 'react-dom';
-import DataGlobal, {CurrentWindowInnerWidthContext, CurrentFontSizeContext}
-    from './DataGlobal';
+import DataGlobal, {DEBOUNDING_TIMEOUT} from './DataGlobal';
 import {act} from 'react-dom/test-utils';
+import DataGlobalMockChildren from './DataGlobalMockChildren';
 
-const Children = () => {
-    const currentWindowInnerWidth
-        = React.useContext(CurrentWindowInnerWidthContext);
-    const currentFontSize
-        = React.useContext(CurrentFontSizeContext);
-
-    return (
-        <>
-            <div id='currentWindowInnerWidth'>{currentWindowInnerWidth.toString()}</div>
-            <div id='currentFontSize'>{currentFontSize.toString()}</div>
-        </>
-    )
+// getFirstLabelByInnerHTML will get this element if the pattern is /Window Inner Width: */
+// <label>
+//    {'Window Inner Width: '}
+//    <span>{wiw.toString()}</span>
+// </label>
+const getFirstLabelByInnerHTMLPattern = pattern => {
+    return Array.from(document.querySelectorAll('label')).find(el => pattern.test(el.innerHTML));
 };
 
-test('resize window will modify state', (done) => {
+test('resize window inner width', (done) => {
     let container = document.createElement('div');
     document.body.appendChild(container);
     act(() => {
-        ReactDom.render(<DataGlobal><Children/></DataGlobal>, container);
+        ReactDom.render(<DataGlobal><DataGlobalMockChildren/></DataGlobal>, container);
     });
-    expect(document.getElementById('currentWindowInnerWidth').innerHTML)
-        .toBe('300');
-    expect(document.getElementById('currentFontSize').innerHTML)
-        .toBe('16');
+    const elementWiw = getFirstLabelByInnerHTMLPattern(/window inner width/i).lastChild;
+
+    expect(elementWiw.innerHTML).toBe('300');
+
     act(() => {
         window.innerWidth = 500;
         window.dispatchEvent(new Event('resize'));
-    })
-    setTimeout(()=>{
-        expect(document.getElementById('currentWindowInnerWidth').innerHTML)
-            .toBe('500');
+    });
+    setTimeout(() => {
+        expect(elementWiw.innerHTML).toBe('500');
         done();
-    },1000); // 第二个argument必须大于等于RESIZE_DONE_TIMEOUT
+    }, DEBOUNDING_TIMEOUT); // 第二个argument必须大于等于DEBOUNDING_TIMEOUT
 });
 
