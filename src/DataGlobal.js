@@ -2,7 +2,7 @@ import React from 'react';
 
 export const ContextWiw = React.createContext(300); // px Window InnerwidthContext
 export const ContextFs = React.createContext(16); // px Fontsize大小Context
-export const DEBOUNDING_TIMEOUT = 1000; // 这么多ms没有resize以后才会开始重新布局
+const DEBOUNDING_TIMEOUT = 1000; // 这么多ms没有resize以后才会开始重新布局
 let debouncingTimer = -1; // resize debouncing timer
 
 const App = ({children}) => {
