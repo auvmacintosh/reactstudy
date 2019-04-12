@@ -1,7 +1,7 @@
 import React from "react";
-import {ContextFs, ContextWiw} from "./DataGlobal";
+import {ContextFs, ContextWiw} from "./DataWindow";
 
-const DataGlobalMockChildren = () => {
+const MockComponent = () => {
     const wiw = React.useContext(ContextWiw); // Window inner width
     const fs = React.useContext(ContextFs); // Font size
 
@@ -20,4 +20,4 @@ const DataGlobalMockChildren = () => {
     )
 };
 
-export default DataGlobalMockChildren;
+export default MockComponent;

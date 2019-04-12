@@ -101,7 +101,7 @@ const withMasonryLayout = Component => {
         componentDidMount() {
             if (this.items.length === 0) {
                 this.getXsWhenReachBottom();
-            ['resize', 'scroll'].forEach(e => window.addEventListener(e, this.handleWindowEvent));
+                ['resize', 'scroll'].forEach(e => window.addEventListener(e, this.handleWindowEvent));
             }
             this.prevColumnNo = this.columnNo;
         }
@@ -150,7 +150,7 @@ const withMasonryLayout = Component => {
                         minWidth: (COLUMN_WIDTH * this.columnNo) + 'rem',
                     }
                 }));
-                this.layout.columnHeights=a;
+                this.layout.columnHeights = a;
                 // this.getXsWhenReachBottom();
                 this.prevColumnNo = this.columnNo;
             }

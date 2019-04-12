@@ -1,11 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import './utility/tail';
+import 'normalize.css'
 import * as serviceWorker from './serviceWorker';
-import DataGlobal from "./DataGlobal";
-import DataGlobalMockChildren from './DataGlobalMockChildren';
+import DataWindow from "./DataWindow";
+import DataArticle from "./DataArticle";
 
-ReactDOM.render(<DataGlobal><DataGlobalMockChildren/></DataGlobal>, document.getElementById('root'));
+ReactDOM.render((
+    <DataWindow>
+        <DataArticle/>
+    </DataWindow>
+), document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
