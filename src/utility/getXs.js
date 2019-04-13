@@ -7,13 +7,12 @@ class HttpError extends Error {
 }
 
 const not200 = response => {
-    console.log(response.status)
     if (response.status === 200) {
         return response;
     } else {
         throw new HttpError(response);
     }
-}
+};
 
 // return a promise contains a object {xs, page}
 const getXs = apiUrl => {
@@ -26,7 +25,7 @@ const getXs = apiUrl => {
                 xs: obj._embedded[serviceFolder],
                 page: obj.page,
             }))
-            .catch(alert);
+            .catch(error => console.log(error));
     }
 };
 

@@ -17,7 +17,6 @@ const App = ({children}) => {
         e.preventDefault();
         switch (e.type) {
             case 'resize':
-                console.log('resize');
                 clearTimeout(debouncingTimer);
                 // RESIZE_DONE_TIMEOUT(例如100)ms没有resize以后再重新布局；
                 debouncingTimer = setTimeout(handleEventDone(), DEBOUNDING_TIMEOUT);

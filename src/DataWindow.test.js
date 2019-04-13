@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDom from 'react-dom';
 import {act} from 'react-dom/test-utils';
+import snapshotRender from 'react-test-renderer';
 import DataGlobal from './DataWindow';
 import {ContextFs, ContextWiw} from "./DataWindow";
 
@@ -63,5 +64,3 @@ describe('DataWindow Component', () => {
         });
     }
 );
-
-

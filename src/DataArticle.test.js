@@ -3,7 +3,15 @@ import ReactDom from 'react-dom';
 import {act} from 'react-dom/test-utils';
 import DataArticle from "./DataArticle";
 
-test('initial render',()=>{
+const DataArticleMockComponent = () => {
+
+};
+
+test('initial render', () => {
     let container = document.createElement('div');
-    ReactDom.render(<DataArticle/>, container);
+    document.body.appendChild(container);
+    act(() => {
+        ReactDom.render(<DataArticle/>, container);
+    })
+
 });
