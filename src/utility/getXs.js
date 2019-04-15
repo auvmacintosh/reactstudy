@@ -14,19 +14,23 @@ const not200 = response => {
     }
 };
 
-// return a promise contains a object {xs, page}
-const getXs = apiUrl => {
+// json data adaptor for Spring Data Rest
+export const adaptorSDR = apiUrl => {
     const serviceFolder = apiUrl.split('/').pop();
-    return (signal = null, page = 0, size = 20, sort = '') => {
-        return fetch(apiUrl + '?page=' + page + '&size=' + size + '&sort=' + sort, {signal: signal})
-            .then(not200)
-            .then(response => response.json())
-            .then(obj => ({
-                xs: obj._embedded[serviceFolder],
-                page: obj.page,
-            }))
-            .catch(error => console.log(error));
-    }
-};
+    return obj => ({
+        xs: obj._embedded[serviceFolder],
+        page: obj.page,
+    })
+}
 
+// return a promise contains a object {xs, page}
+const getXs = apiUrl => (signal = null, page = 0, size = 20, sort = '') => {
+    return fetch(apiUrl + '?page=' + page + '&size=' + size + '&sort=' + sort, {signal: signal})
+        .then(not200)
+        .then(response => response.json())
+        .then()
+        .catch(error => {
+            throw error
+        });
+};
 export default getXs;
