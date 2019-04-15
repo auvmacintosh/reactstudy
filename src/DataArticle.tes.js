@@ -5,7 +5,7 @@ import './utility/tail';
 import DataArticle from "./DataArticle";
 import mockArticles from './utility/articles'
 
-test('initial render', () => {
+xtest('initial render', () => {
     let container = document.createElement('div');
     document.body.appendChild(container);
     window.fetch = jest.fn(() => new Promise(resolve => (resolve({
