@@ -1,10 +1,4 @@
-//recursive async，测试结果也完全符合预期
-
 let count = 1;
-let doSomething = jest.fn(() => new Promise(resolve =>
-    resolve('Number ' + count++)
-));
-
 let obj = {};
 Object.defineProperty(obj, 'ifOneMoreTime', {
     get: jest.fn()
@@ -12,15 +6,20 @@ Object.defineProperty(obj, 'ifOneMoreTime', {
         .mockImplementationOnce(() => true)
         .mockImplementationOnce(() => false)
 });
+let doSomething = jest.fn(() => new Promise(resolve =>
+    resolve('Number ' + count++)
+));
 
 const recursiveAsyncFn = () => {
     if (obj.ifOneMoreTime) {
-        doSomething().then(resolve => {console.log(resolve)});
-        recursiveAsyncFn();
+        doSomething().then(resolve => {
+            console.log(resolve);
+            recursiveAsyncFn();
+        });
     }
 };
 
-test('execute certain times', () => {
-    recursiveAsyncFn();
+test('execute certain times', async () => {
+    await recursiveAsyncFn();
     expect(doSomething).toHaveBeenCalledTimes(2);
 });

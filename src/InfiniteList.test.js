@@ -2,10 +2,10 @@ import React from 'react';
 import ReactDom from 'react-dom';
 import {act} from 'react-dom/test-utils';
 import './utility/tail';
-import DataArticle from "./DataArticle";
+import InfiniteList from "./InfiniteList";
 import mockArticles from './utility/articles'
 
-xtest('initial render', () => {
+xtest('initial render', async () => {
     let container = document.createElement('div');
     document.body.appendChild(container);
     window.fetch = jest.fn(() => new Promise(resolve => (resolve({
@@ -28,11 +28,11 @@ xtest('initial render', () => {
             .mockImplementationOnce(() => 500) // 第6次调用clientHeight返回500, stop fetch
     });
     act(() => {
-        ReactDom.render(<DataArticle/>, container);
     });
+         await ReactDom.render(<InfiniteList/>, container);
     act(() => {
-        window.dispatchEvent(new Event('resize'));
     });
+        await window.dispatchEvent(new Event('resize'));
     act(() => {
         window.dispatchEvent(new Event('scroll'));
     });

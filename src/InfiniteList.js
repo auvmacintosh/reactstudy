@@ -5,7 +5,7 @@ const PAGE_SIZE = 10; // 每次拉到底的page size，本来想第一次刷新�
 let nextPage = 0; // getXs的页号
 const controller = new AbortController();
 
-const DataArticle = () => {
+const InfiniteList = () => {
     const [items, setItems] = useState([]);
 
     const windowEventHandler = (e) => {
@@ -71,4 +71,4 @@ const DataArticle = () => {
     );
 };
 
-export default DataArticle;
+export default InfiniteList;

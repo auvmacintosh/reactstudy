@@ -5,11 +5,11 @@ import './utility/tail';
 import 'normalize.css'
 import * as serviceWorker from './serviceWorker';
 import DataWindow from "./DataWindow";
-import DataArticle from "./DataArticle";
+import InfiniteList from "./InfiniteList";
 
 ReactDOM.render((
     <DataWindow>
-        <DataArticle/>
+        <InfiniteList/>
     </DataWindow>
 ), document.getElementById('root'));
 
