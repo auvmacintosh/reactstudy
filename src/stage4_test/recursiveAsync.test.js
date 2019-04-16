@@ -19,7 +19,7 @@ const recursiveAsyncFn = () => {
     }
 };
 
-test('execute certain times', async () => {
+xtest('execute certain times', async () => {
     await recursiveAsyncFn();
     expect(doSomething).toHaveBeenCalledTimes(2);
 });
