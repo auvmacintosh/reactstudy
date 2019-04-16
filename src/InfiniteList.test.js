@@ -5,7 +5,7 @@ import './utility/tail';
 import InfiniteList from "./InfiniteList";
 import mockArticles from './utility/articles'
 
-xtest('initial render', async () => {
+test('initial render', () => {
     let container = document.createElement('div');
     document.body.appendChild(container);
     window.fetch = jest.fn(() => new Promise(resolve => (resolve({
@@ -28,14 +28,16 @@ xtest('initial render', async () => {
             .mockImplementationOnce(() => 500) // 第6次调用clientHeight返回500, stop fetch
     });
     act(() => {
+        ReactDom.render(<InfiniteList/>, container);
     });
-         await ReactDom.render(<InfiniteList/>, container);
     act(() => {
+        window.dispatchEvent(new Event('resize'));
     });
-        await window.dispatchEvent(new Event('resize'));
     act(() => {
         window.dispatchEvent(new Event('scroll'));
     });
 
-    expect(fetch).toHaveBeenCalledTimes(6);
+    setTimeout(() => {
+        expect(fetch).toHaveBeenCalledTimes(6);
+    }, 100)
 });
