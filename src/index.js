@@ -4,13 +4,13 @@ import './index.css';
 import './utility/tail';
 import 'normalize.css'
 import * as serviceWorker from './serviceWorker';
-import DataWindow from "./DataWindow";
+import GlobalState from "./GlobalState";
 import InfiniteList from "./InfiniteList";
 
 ReactDOM.render((
-    <DataWindow>
+    <GlobalState>
         <InfiniteList/>
-    </DataWindow>
+    </GlobalState>
 ), document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change

@@ -1,9 +1,8 @@
 import React from 'react';
 import ReactDom from 'react-dom';
 import {act} from 'react-dom/test-utils';
-import snapshotRender from 'react-test-renderer';
-import DataGlobal from './DataWindow';
-import {ContextFs, ContextWiw} from "./DataWindow";
+import GlobalState from './GlobalState';
+import {ContextFs, ContextWiw} from "./GlobalState";
 
 // getFirstLabelByInnerHTML will get this element if the pattern is /Window Inner Width: */
 // <label>
@@ -14,7 +13,7 @@ const getFirstLabelByInnerHTMLPattern = pattern => {
     return Array.from(document.querySelectorAll('label')).find(el => pattern.test(el.innerHTML));
 };
 
-const DataWindowMockChildren = () => {
+const GlobalStateMockChildren = () => {
     const wiw = React.useContext(ContextWiw); // Window inner width
     const fs = React.useContext(ContextFs); // Font size
 
@@ -33,34 +32,40 @@ const DataWindowMockChildren = () => {
     )
 };
 
-describe('DataWindow Component', () => {
+describe('GlobalState Component', () => {
         let container = document.createElement('div');
         document.body.appendChild(container);
         act(() => {
-            ReactDom.render(<DataGlobal><DataWindowMockChildren/></DataGlobal>, container);
+            ReactDom.render(
+                <GlobalState>
+                    <GlobalStateMockChildren/>
+                </GlobalState>
+                , container);
         });
         const elementWiw = getFirstLabelByInnerHTMLPattern(/window inner width/i).lastChild;
         const elementFs = getFirstLabelByInnerHTMLPattern(/font size/i).lastChild;
 
-        test('initial state', () => {
-            expect(elementWiw.innerHTML).toBe('300');
-            expect(elementFs.innerHTML).toBe('16');
-        });
-
-        test('resize window inner width', () => {
+        test('resize window inner width', (done) => {
             window.innerWidth = 500;
             act(() => {
                 window.dispatchEvent(new Event('resize'));
             });
-            expect(elementWiw.innerHTML).toBe('500');
+            setTimeout(() => {
+                expect(elementWiw.innerHTML).toBe('500');
+                done();
+            }, 0);
         });
 
-        test('change fontsize', () => {
+        test('change fontsize', (done) => {
             window.getComputedStyle = () => ({fontSize: '18px'});
             act(() => {
                 window.dispatchEvent(new Event('resize'));
             });
-            expect(elementFs.innerHTML).toBe('18');
+            setTimeout(() => {
+                expect(elementFs.innerHTML).toBe('18');
+                done();
+            }, 0);
         });
     }
 );
+

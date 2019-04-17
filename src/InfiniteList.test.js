@@ -5,39 +5,81 @@ import './utility/tail';
 import InfiniteList from "./InfiniteList";
 import mockArticles from './utility/articles'
 
-test('initial render', () => {
-    let container = document.createElement('div');
-    document.body.appendChild(container);
-    window.fetch = jest.fn(() => new Promise(resolve => (resolve({
-        ok: true,
-        status: 200,
-        json: () => mockArticles
-    }))));
-    window.innerHeight = 300;
-    window.scrollY = 100;
-    Object.defineProperty(document.body, 'clientHeight', {
-        get: jest.fn()
-            .mockImplementationOnce(() => 300) // 第1次调用clientHeight返回300
-            .mockImplementationOnce(() => 400) // 第2次调用clientHeight返回400
-            .mockImplementationOnce(() => 500) // 第3次调用clientHeight返回500, stop fetch
-            .mockImplementationOnce(() => 300) // 第4次调用clientHeight返回300
-            .mockImplementationOnce(() => 400) // 第5次调用clientHeight返回400
-            .mockImplementationOnce(() => 500) // 第6次调用clientHeight返回500, stop fetch
-            .mockImplementationOnce(() => 300) // 第4次调用clientHeight返回300
-            .mockImplementationOnce(() => 400) // 第5次调用clientHeight返回400
-            .mockImplementationOnce(() => 500) // 第6次调用clientHeight返回500, stop fetch
-    });
-    act(() => {
-        ReactDom.render(<InfiniteList/>, container);
-    });
-    act(() => {
-        window.dispatchEvent(new Event('resize'));
-    });
-    act(() => {
-        window.dispatchEvent(new Event('scroll'));
+let container = document.createElement('div');
+document.body.appendChild(container);
+window.fetch = jest.fn(() => new Promise(resolve => (resolve({
+    ok: true,
+    status: 200,
+    json: () => mockArticles
+}))));
+window.innerHeight = 300;
+window.scrollY = 100;
+let idx = 0;
+Object.defineProperty(document.body, 'clientHeight', {
+    get: jest.fn().mockImplementation(() => {
+        let returnArray = [300, 400, 500];
+        console.log(returnArray[idx % returnArray.length]);
+        return returnArray[idx++ % returnArray.length];
+    })
+});
+
+// expected output:
+// start initial render
+// 300
+// 400
+// 500
+// finish initial render
+// start resize event
+// 300
+// 400
+// 500
+// finish resize event
+// start scroll event
+// 300
+// 400
+// 500
+// finish scroll event
+describe('fetch when the page reach bottom', () => {
+    test('initial render', (done) => {
+        act(() => {
+            console.log('start initial render');
+            ReactDom.render(<InfiniteList/>, container);
+        });
+        setTimeout(() => {
+            expect(fetch).toHaveBeenCalledTimes(2);
+            console.log('finish initial render');
+            done();
+        }, 0)
     });
 
-    setTimeout(() => {
-        expect(fetch).toHaveBeenCalledTimes(6);
-    }, 100)
+    test('lunch resize event', (done) => {
+        act(() => {
+            console.log('start resize event');
+            window.dispatchEvent(new Event('resize'));
+            // the sequential event should not have listener.
+            window.dispatchEvent(new Event('resize'));
+            window.dispatchEvent(new Event('scroll'));
+        });
+        setTimeout(() => {
+            expect(fetch).toHaveBeenCalledTimes(4);
+            console.log('finish resize event');
+            done();
+        }, 0)
+    });
+
+    test('lunch scroll event', (done) => {
+        act(() => {
+            console.log('start scroll event');
+            window.dispatchEvent(new Event('scroll'));
+            // the sequential event should not have listener.
+            window.dispatchEvent(new Event('resize'));
+            window.dispatchEvent(new Event('scroll'));
+        });
+        setTimeout(() => {
+            expect(fetch).toHaveBeenCalledTimes(6);
+            console.log('finish scroll event');
+            done();
+        }, 0)
+    });
 });
+

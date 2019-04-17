@@ -1,5 +1,5 @@
 import React from "react";
-import {ContextFs, ContextWiw} from "./DataWindow";
+import {ContextFs, ContextWiw} from "./GlobalState";
 
 const MockComponent = () => {
     const wiw = React.useContext(ContextWiw); // Window inner width

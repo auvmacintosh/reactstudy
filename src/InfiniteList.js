@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import getXs, {adaptorSDR} from './utility/getXs'
+import MasonryLayout from './MasonryLayout';
 
 const PAGE_SIZE = 10; // 每次拉到底的page size，本来想第一次刷新多一些，后来发现page no不好算
 let nextPage = 0; // getXs的页号
@@ -27,6 +28,7 @@ const InfiniteList = () => {
         // 但是用>=有一个问题就是会连续触发，这时候需要先removeEventListener再add上去
         // +n的原因是，这个尺寸的测量值不准，所以必须得留富裕
         if ((window.innerHeight + window.scrollY + 10) >= document.body.clientHeight) {
+            // if ((window.innerHeight + window.scrollY + 10) >= document.body.clientHeight) {
             ['scroll', 'resize'].forEach(e => window.removeEventListener(e, windowEventHandler));
             // remove不存在的eventListener不会报错
             const apiUrl = '/api/articles';
@@ -46,29 +48,15 @@ const InfiniteList = () => {
     };
 
     useEffect(() => {
-        ['scroll', 'resize'].forEach(e => window.addEventListener(e, windowEventHandler));
         ifReachBottom(controller.signal);
+        ['scroll', 'resize'].forEach(e => window.addEventListener(e, windowEventHandler));
         return () => {
             ['scroll', 'resize'].forEach(e => window.removeEventListener(e, windowEventHandler));
             controller.abort();
         };
     }, []);
 
-    const spinnerStyle = {
-        padding: '10px',
-    };
-
-    const columnStyle = {
-        display: 'flex',
-        flexDirection: 'column',
-    };
-
-    return (
-        <div style={columnStyle}>
-            {items.map((item, i) => <div key={i}>{item._links.self.href.split('/').tail() + item.title}</div>)}
-            <div style={spinnerStyle}></div>
-        </div>
-    );
+    return <MasonryLayout items={items}/>;
 };
 
 export default InfiniteList;
