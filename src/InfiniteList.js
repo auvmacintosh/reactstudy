@@ -19,7 +19,7 @@ const InfiniteList = () => {
                 ifReachBottom(controller.signal);
                 break;
             default:
-                throw(new Error('No such event ' + e.type));
+                throw(new Error('No such handler ' + e.type));
         }
     };
 
@@ -39,9 +39,6 @@ const InfiniteList = () => {
                     // 相同事件，相同callback的多次addEventListener只会被加一次
                     ifReachBottom(signal); // Recursive
                 })
-                .catch(error => {
-                    throw error
-                });
         } else {
             ['scroll', 'resize'].forEach(e => window.addEventListener(e, windowEventHandler));
         }

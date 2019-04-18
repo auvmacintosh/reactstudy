@@ -3,7 +3,7 @@ import ReactDom from 'react-dom';
 import {act} from 'react-dom/test-utils';
 import './utility/tail';
 import InfiniteList from "./InfiniteList";
-import mockArticles from './utility/articles'
+import mockArticles from './utility/articles';
 
 let container = document.createElement('div');
 document.body.appendChild(container);
@@ -12,11 +12,13 @@ window.fetch = jest.fn(() => new Promise(resolve => (resolve({
     status: 200,
     json: () => mockArticles
 }))));
+jest.spyOn(window.AbortController.prototype, 'abort');
+
 window.innerHeight = 300;
 window.scrollY = 100;
 let idx = 0;
 Object.defineProperty(document.body, 'clientHeight', {
-    get: jest.fn().mockImplementation(() => {
+    get: jest.fn(() => {
         let returnArray = [300, 400, 500];
         console.log(returnArray[idx % returnArray.length]);
         return returnArray[idx++ % returnArray.length];
@@ -49,7 +51,7 @@ describe('fetch when the page reach bottom', () => {
             expect(fetch).toHaveBeenCalledTimes(2);
             console.log('finish initial render');
             done();
-        }, 0)
+        }, 0);
     });
 
     test('lunch resize event', (done) => {
@@ -64,7 +66,7 @@ describe('fetch when the page reach bottom', () => {
             expect(fetch).toHaveBeenCalledTimes(4);
             console.log('finish resize event');
             done();
-        }, 0)
+        }, 0);
     });
 
     test('lunch scroll event', (done) => {
@@ -79,7 +81,17 @@ describe('fetch when the page reach bottom', () => {
             expect(fetch).toHaveBeenCalledTimes(6);
             console.log('finish scroll event');
             done();
-        }, 0)
+        }, 0);
     });
+});
+
+test('cancel AJAX calls when unmount', (done) => {
+    act(() => {
+        ReactDom.unmountComponentAtNode(container);
+    });
+    setTimeout(() => {
+        expect(AbortController.prototype.abort).toHaveBeenCalledTimes(1);
+        done();
+    }, 0);
 });
 

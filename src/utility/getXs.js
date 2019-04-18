@@ -28,7 +28,6 @@ const getXs = apiUrl => (signal = null, page = 0, size = 20, sort = '') => {
     return fetch(apiUrl + '?page=' + page + '&size=' + size + '&sort=' + sort, {signal: signal})
         .then(not200)
         .then(response => response.json())
-        .then()
         .catch(error => {
             throw error
         });

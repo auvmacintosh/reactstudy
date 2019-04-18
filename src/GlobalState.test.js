@@ -68,4 +68,3 @@ describe('GlobalState Component', () => {
         });
     }
 );
-
