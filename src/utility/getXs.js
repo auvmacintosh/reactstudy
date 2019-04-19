@@ -1,7 +1,6 @@
 class HttpError extends Error {
     constructor(response) {
         super(`${response.status} for ${response.url}`);
-        this.name = 'HttpError';
         this.response = response;
     }
 }
@@ -17,10 +16,17 @@ const not200 = response => {
 // json data adaptor for Spring Data Rest
 export const adaptorSDR = apiUrl => {
     const serviceFolder = apiUrl.split('/').pop();
-    return obj => ({
-        xs: obj._embedded[serviceFolder],
-        page: obj.page,
-    })
+    return obj => {
+        let result = {
+            xs: obj._embedded[serviceFolder],
+            page: obj.page,
+        };
+        if(result.xs === undefined || result.page === undefined) {
+            throw new Error('Wrong API response format.')
+        } else {
+            return result;
+        }
+    }
 }
 
 // return a promise contains a object {xs, page}

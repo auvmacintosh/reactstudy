@@ -86,6 +86,7 @@ describe('fetch when the page reach bottom', () => {
 });
 
 test('cancel AJAX calls when unmount', (done) => {
+    // eventListener有没有被remove就没法测，因为js就没提供getEventListener功能
     act(() => {
         ReactDom.unmountComponentAtNode(container);
     });

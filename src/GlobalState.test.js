@@ -32,9 +32,12 @@ const GlobalStateMockChildren = () => {
     )
 };
 
+let container = document.createElement('div');
+document.body.appendChild(container);
+let elementWiw;
+let elementFs;
+
 describe('GlobalState Component', () => {
-        let container = document.createElement('div');
-        document.body.appendChild(container);
         act(() => {
             ReactDom.render(
                 <GlobalState>
@@ -42,8 +45,8 @@ describe('GlobalState Component', () => {
                 </GlobalState>
                 , container);
         });
-        const elementWiw = getFirstLabelByInnerHTMLPattern(/window inner width/i).lastChild;
-        const elementFs = getFirstLabelByInnerHTMLPattern(/font size/i).lastChild;
+        elementWiw = getFirstLabelByInnerHTMLPattern(/window inner width/i).lastChild;
+        elementFs = getFirstLabelByInnerHTMLPattern(/font size/i).lastChild;
 
         test('resize window inner width', (done) => {
             window.innerWidth = 500;
@@ -68,3 +71,13 @@ describe('GlobalState Component', () => {
         });
     }
 );
+
+test('remove eventListener when unmount', (done) => {
+    // eventListener有没有被remove就没法测，因为js就没提供getEventListener功能
+    act(() => {
+        ReactDom.unmountComponentAtNode(container);
+    });
+    setTimeout(() => {
+        done();
+    }, 0);
+});
