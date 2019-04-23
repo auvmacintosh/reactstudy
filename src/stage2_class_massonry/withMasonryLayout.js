@@ -70,9 +70,9 @@ const withMasonryLayout = Component => {
         };
 
         addItem = item => {
-            this.layout.lastItemIndex = this.items.push(item) - 1;
+            this.layout.lastCellItemIndex = this.items.push(item) - 1;
             // itemIndexMatrix能改，我觉得是因为是shadow freeze的，这个得再试试。另外react应该不推荐这个写法。
-            this.layout.itemIndexMatrix[this.shortestColumnIndex].push(this.layout.lastItemIndex);
+            this.layout.itemIndexMatrix[this.shortestColumnIndex].push(this.layout.lastCellItemIndex);
             this.setState(prevState => prevState);
         };
 
@@ -129,14 +129,14 @@ const withMasonryLayout = Component => {
         renderOnResizeDone = () => {
             if (this.columnNo !== this.prevColumnNo) {
                 // console.log('1: '+ this.columnNo);
-                if (this.layout.lastItemIndex + 1 < this.items.length) {
-                    // console.log('2:' + this.layout.lastItemIndex +' '+ this.items.length);
-                    for (let i = this.layout.lastItemIndex + 1; i < this.items.length; i++) {
+                if (this.layout.lastCellItemIndex + 1 < this.items.length) {
+                    // console.log('2:' + this.layout.lastCellItemIndex +' '+ this.items.length);
+                    for (let i = this.layout.lastCellItemIndex + 1; i < this.items.length; i++) {
                         // console.log('3');
                         let shortestColumnIndex = this.shortestColumnIndex;
                         this.layout.itemIndexMatrix[shortestColumnIndex].push(i);
                         this.layout.columnHeights[shortestColumnIndex] += this.itemHeights[i];
-                        this.layout.lastItemIndex = i;
+                        this.layout.lastCellItemIndex = i;
                         console.log(`${i}: ${(this.layout.columnHeights)}`)
                     }
                 }

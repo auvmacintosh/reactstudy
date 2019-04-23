@@ -1,6 +1,7 @@
 :root {
   box-sizing: border-box; /*box尺寸，就是width和height，包含border*/
   --sidebar-width: 1.8rem; /*隐藏了sidebar，这1.8是留给handle的*/
+  /*font-size: 16px;*/
 }
 
 @media (min-width: 800px) {
