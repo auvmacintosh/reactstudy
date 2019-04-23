@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import getXs, {adaptorSDR} from './utility/getXs'
-import MasonryLayout from './MasonryLayout';
+import CellArrangement from './CellArrangement';
 
 const PAGE_SIZE = 10; // 每次拉到底的page size，本来想第一次刷新多一些，后来发现page no不好算
 let nextPage = 0; // getXs的页号
@@ -53,7 +53,7 @@ const InfiniteList = () => {
         };
     }, []);
 
-    return <MasonryLayout items={items}/>;
+    return <CellArrangement items={items}/>;
 };
 
 export default InfiniteList;
