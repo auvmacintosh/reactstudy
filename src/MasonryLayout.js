@@ -33,7 +33,9 @@ const spinnerStyle = {
 const columnStyle = {
     display: 'flex',
     flexDirection: 'column',
-    width: COLUMN_WIDTH + 'rem',
+    fontSize: '16px',
+    // width: COLUMN_WIDTH + 'rem',
+    width: '10rem',
 };
 
 export default MasonryLayout;
