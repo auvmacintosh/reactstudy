@@ -1,23 +1,7 @@
 import binarySearch from "./utility/binarySearch";
 
-export const MIN_COLUMN_NO = 1; // 最少这么多列
-export const HALF_GAP = 0.8; // rem
-
-// todo: 当宽度小到一定程度，判断为手机用户，列宽占满屏幕
-export const getColumnWidth = (wiw) => {
-    return 20; // rem
-};
-
-export const getColumnNo = (fs, wiw) => {
-    let completeColumnNo = Math.floor((wiw - 2 * HALF_GAP * fs)
-        / (getColumnWidth(wiw) * fs));
-    // 最小也得是2列，不能返回0列
-    return Math.max(MIN_COLUMN_NO, completeColumnNo);
-};
-
 class CellArrangementDS {
-    getCwds(wiw) {
-        let columnWidth = getColumnWidth(wiw);
+    getCwds(columnWidth) {
         if (this[columnWidth] === undefined) {
             this[columnWidth] = new ColumnWidthDS();
         }
@@ -36,11 +20,15 @@ class ColumnWidthDS {
         }
         return this[columnNo];
     }
+
+    pushCellHeight(cellHeight) {
+        this.cellHeights.push(cellHeight);
+    }
 }
 
 class ColumnNoDS {
     constructor(columnNo) {
-        // 二维数组，存的是每列包含的那部分xs的indexInAllXs
+        // 二维数组，存的是每列包含的那部分xs的indexInAllXs，所有操作必须immutable
         this.itemIndexMatrix = [...Array(columnNo)].map(() => []);
         // 二维数组，存的是每列包含的那部分xs的offsetBottom，这块存bottom而不是top的原因是，上一个的bottom就是下一个的top，
         // 如果存的是top，只能从cwds里取cellHeight再相加，太麻烦。
@@ -52,18 +40,20 @@ class ColumnNoDS {
     getShortestColumnIndex() {
         let columnNo = this.offsetBottomMatrix.length;
         let columnHeights = Array(columnNo).fill().map((el, idx) => {
-            return this.offsetBottomMatrix[idx].tail();
-        });
+            let tmp = this.offsetBottomMatrix[idx].tail();
+            return tmp === undefined ? 0 : tmp;
+        }); // 空数组返回0
         return columnHeights.indexOf(
-            Math.min(...columnHeights));
+            Math.min(...columnHeights)); // 空矩阵返回0
     };
 
     getLastCellsItemIndex() {
         let columnNo = this.itemIndexMatrix.length;
         let lastCellsItemIndices = Array(columnNo).fill().map((el, idx) => {
-            return this.itemIndexMatrix[idx].tail();
-        });
-        return Math.max(...lastCellsItemIndices);
+            let tmp = this.itemIndexMatrix[idx].tail();
+            return tmp === undefined ? -1 : tmp;
+        }); // 空数组返回-1
+        return Math.max(...lastCellsItemIndices); // 空矩阵返回-1
     };
 
     getSmallestItemIndexInViewport(scrollHeight) {
@@ -86,25 +76,40 @@ class ColumnNoDS {
 
         let topItemIndicesInViewport = this.offsetBottomMatrix
             .map((offsetBottomArray) => binarySearchSpecial(offsetBottomArray, scrollHeight))
-            .map((el, idx) => this.itemIndexMatrix[idx][el]);
+            .map((el, idx) => {
+                let tmp = this.itemIndexMatrix[idx][el];
+                return tmp === undefined ? -1 : tmp;
+            }); // 空数组返回-1
 
-        return Math.min(...topItemIndicesInViewport);
+        return Math.min(...topItemIndicesInViewport); // 矩阵只要含有空数组就返回-1
     };
 
     getCellsOffsetTop(itemIndex) {
-        let [x, y] = this.itemIndexMatrix
+        let x, y;
+        [x, y] = this.itemIndexMatrix
             .map(itemIndexArray => binarySearch(itemIndexArray, itemIndex))
             .map((el, idx) => {
                 if (el !== -1) {
                     return [idx, el]
                 }
+                return undefined;
             });
-        return this.offsetBottomMatrix[x][y-1];
+        if (y === undefined) {
+            throw(new Error('Can not find this item by the given index'));
+        } else if(y === 0) {
+            return 0;
+        } else {
+            return this.offsetBottomMatrix[x][y - 1];
+        }
     };
 
-    setOffsetBottom(fs, wiw, height) {
-        // this.getCwds(fs).cellHeights.push(height);
-        this.getCwdsCnds(fs, wiw).columnHeights[this.getShortestColumnIndex(fs, wiw)] += height;
+    concatItemIndex(itemIndex) { // Immutable
+        this.itemIndexMatrix = [...this.itemIndexMatrix];
+        this.itemIndexMatrix[this.getShortestColumnIndex()].concat([itemIndex]);
+    }
+
+    pushOffsetBottom(offsetBottom) {
+        this.offsetBottomMatrix[this.getShortestColumnIndex()].push(offsetBottom);
     };
 }
 

@@ -6,13 +6,17 @@ import 'normalize.css'
 import * as serviceWorker from './serviceWorker';
 import GlobalState from "./GlobalState";
 import InfiniteList from "./InfiniteList";
+import Test from "./stage4_test/TestRenderOneByOne";
+
+// ReactDOM.render((
+//     <GlobalState>
+//         <InfiniteList/>
+//     </GlobalState>
+// ), document.getElementById('root'));
 
 ReactDOM.render((
-    <GlobalState>
-        <InfiniteList/>
-    </GlobalState>
+    <Test/>
 ), document.getElementById('root'));
-
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: http://bit.ly/CRA-PWA

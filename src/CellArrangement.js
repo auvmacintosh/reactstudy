@@ -1,24 +1,40 @@
-import React, {useState, useEffect, useContext, useRef} from 'react';
+import React, {useState, useContext, useRef, useCallback} from 'react';
 import PropTypes from "prop-types";
 import {ContextFs, ContextWiw} from "./GlobalState";
+import CellArrangementDS from "./CellArrangementDS";
 import MasonryLayout from "./MasonryLayout";
 
-let layouts = new CellArrangementDS();
+const MIN_COLUMN_NO = 1; // 最少这么多列
+const HALF_GAP = 0.8; // rem
+// todo: 当宽度小到一定程度，判断为手机用户，列宽占满屏幕
+const getColumnWidth = (wiw) => {
+    return 20; // rem
+};
+const getColumnNo = (fs, wiw) => {
+    let completeColumnNo = Math.floor((wiw - 2 * HALF_GAP * fs)
+        / (getColumnWidth(wiw) * fs));
+    // 最小也得是2列，不能返回0列
+    return Math.max(MIN_COLUMN_NO, completeColumnNo);
+};
 
+let ds = new CellArrangementDS();
 let prevColumnNo = 0; // 窗口宽度改变的时候，需要拿之前的列数和现在的列数比较
-
 
 const CellArrangement = ({items}) => {
     const fs = useContext(ContextFs); // Font size
     const wiw = useContext(ContextWiw); // Window inner width
-
-    const getItem = useRef(i => {
-        return items[i];
-    });
-
+    const getCwds = () => ds.getCwds(getColumnWidth(wiw));
+    const getCnds = () => ds.getCwds(getColumnWidth(wiw)).getCnds(getColumnNo(fs, wiw));
     const [matrix, setMatrix] = useState();
+    const getItem = useRef(i => items[i]);
+    const pushCellHeight = useCallback(getCwds().pushCellHeight, [wiw]);
+    const pushOffsetBottom = useCallback(getCnds().pushOffsetBottom, [fs, wiw])
 
-    if (getFoCno(fs, wiw).lastCellsItemIndex + 1 < items.length) {
+    // todo: 把一次items的改变拆成一个一个render
+    setTimeout(()=>{
+
+    },0);
+    if (getCnds().getLastCellsItemIndex() + 1 < items.length) {
         for lastCellsItemIndex:
         cellHeights.length
         setMatrix(() => getFoCno(fs, wiw).itemIndexMatrix);
@@ -32,7 +48,10 @@ const CellArrangement = ({items}) => {
     this.setState(prevState => prevState);
 
     return (
-        <MasonryLayout matrix={matrix} getItem={getItem} setHight={setHeight}/>
+        <MasonryLayout matrix={matrix} getItem={getItem}
+                       pushCellHeight={pushCellHeight}
+                       pushOffsetBottom={pushOffsetBottom}
+        />
     )
 };
 
