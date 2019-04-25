@@ -32,20 +32,19 @@ const CellArrangement = ({items}) => {
 
     // todo: 把一次items的改变拆成一个一个render
     setTimeout(()=>{
-
+        if (getCnds().getLastCellsItemIndex() + 1 < items.length) {
+            for lastCellsItemIndex:
+            cellHeights.length
+            setMatrix(() => getFoCno(fs, wiw).itemIndexMatrix);
+            for cellHeights.length:
+            items.length
+            setMatrix(() => getFoCno(fs, wiw).itemIndexMatrix);
+        }
+        getFoCno(fs, wiw).lastCellsItemIndex = this.items.push(item) - 1;
+        // itemIndexMatrix能改，我觉得是因为是shadow freeze的，这个得再试试。另外react应该不推荐这个写法。
+        this.layout.itemIndexMatrix[this.shortestColumnIndex].push(this.layout.lastCellsItemIndex);
+        this.setState(prevState => prevState);
     },0);
-    if (getCnds().getLastCellsItemIndex() + 1 < items.length) {
-        for lastCellsItemIndex:
-        cellHeights.length
-        setMatrix(() => getFoCno(fs, wiw).itemIndexMatrix);
-        for cellHeights.length:
-        items.length
-        setMatrix(() => getFoCno(fs, wiw).itemIndexMatrix);
-    }
-    getFoCno(fs, wiw).lastCellsItemIndex = this.items.push(item) - 1;
-    // itemIndexMatrix能改，我觉得是因为是shadow freeze的，这个得再试试。另外react应该不推荐这个写法。
-    this.layout.itemIndexMatrix[this.shortestColumnIndex].push(this.layout.lastCellsItemIndex);
-    this.setState(prevState => prevState);
 
     return (
         <MasonryLayout matrix={matrix} getItem={getItem}
