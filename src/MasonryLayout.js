@@ -1,10 +1,7 @@
 import React, {useState} from 'react';
 import PropTypes from "prop-types";
-import {ContextFs, ContextWiw} from "./GlobalState";
 
-const MasonryLayout = ({items}) => {
-    const lfs = React.useContext(ContextFs); // Layout factor string, i.e Font sise
-    const wiw = React.useContext(ContextWiw); // Window inner width
+const MasonryLayout = ({matrix, getItem, itemIndexUnderUpdating, pushCellHeight, pushOffsetBottom}) => {
 
     // const [itemIndexMatrix, setItemIndexMatrix] = useState(layouts[columnNo].itemIndexMatrix);
     // this.state = {
@@ -19,7 +16,7 @@ const MasonryLayout = ({items}) => {
 
     return (
         <div style={columnStyle}>
-            {items.map((item, i) => <div key={i}>{item._links.self.href.split('/').tail() + item.title}</div>)}
+            {matrix.map((item, i) => <div key={i}>{item._links.self.href.split('/').tail() + item.title}</div>)}
             <div style={spinnerStyle}></div>
         </div>
     );

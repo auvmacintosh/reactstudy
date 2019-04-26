@@ -37,14 +37,21 @@ class ColumnNoDS {
         this.offsetBottomMatrix = [...Array(columnNo)].map(() => []);
     }
 
-    getShortestColumnIndex() {
+    getColumnHeights() {
         let columnNo = this.offsetBottomMatrix.length;
-        let columnHeights = Array(columnNo).fill().map((el, idx) => {
+        return Array(columnNo).fill().map((el, idx) => {
             let tmp = this.offsetBottomMatrix[idx].tail();
             return tmp === undefined ? 0 : tmp;
         }); // 空数组返回0
-        return columnHeights.indexOf(
-            Math.min(...columnHeights)); // 空矩阵返回0
+    };
+
+    getShortestColumnHeight() {
+        return Math.min(...this.getColumnHeights());
+    };
+
+    getShortestColumnIndex() {
+        return this.getColumnHeights().indexOf(
+            this.getShortestColumnHeight()); // 空矩阵返回0
     };
 
     getLastCellsItemIndex() {
