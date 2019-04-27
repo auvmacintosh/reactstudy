@@ -5,7 +5,7 @@ import CellArrangementDS from "./CellArrangementDS";
 import MasonryLayout from "./MasonryLayout";
 
 const MIN_COLUMN_NO = 1; // 最少这么多列
-const HALF_GAP = 0.8; // rem
+export const HALF_GAP = 0.8; // rem
 // todo: 当宽度小到一定程度，判断为手机用户，列宽占满屏幕
 const getColumnWidth = (fs, wiw) => {
     return 20; // rem
@@ -22,7 +22,7 @@ let prevColumnWidth = 0; // 窗口宽度改变的时候，需要拿之前的列�
 let prevColumnNo = 0; // 窗口宽度改变的时候，需要拿之前的列数和现在的列数比较
 let itemIndexUnderUpdating = -1; // 正在更新的item的index，只有判断自己是这个item的时候，才会更新height和offsetBottom
 
-const CellArrangement = ({items}) => {
+const CellArrangement = ({items,children}) => {
     const fs = useContext(ContextFs); // Font size
     const wiw = useContext(ContextWiw); // Window inner width
     const getCwds = () => ds.getCwds(getColumnWidth(fs, wiw));
@@ -81,7 +81,9 @@ const CellArrangement = ({items}) => {
                        itemIndexUnderUpdating={itemIndexUnderUpdating}
                        pushCellHeight={pushCellHeight}
                        pushOffsetBottom={pushOffsetBottom}
-        />
+        >
+            {children}
+        </MasonryLayout>
     )
 };
 
