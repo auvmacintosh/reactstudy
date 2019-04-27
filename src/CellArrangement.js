@@ -22,13 +22,15 @@ let prevColumnWidth = 0; // 窗口宽度改变的时候，需要拿之前的列�
 let prevColumnNo = 0; // 窗口宽度改变的时候，需要拿之前的列数和现在的列数比较
 let itemIndexUnderUpdating = -1; // 正在更新的item的index，只有判断自己是这个item的时候，才会更新height和offsetBottom
 
-const CellArrangement = ({items,children}) => {
+const CellArrangement = ({items, children}) => {
     const fs = useContext(ContextFs); // Font size
     const wiw = useContext(ContextWiw); // Window inner width
-    const getCwds = () => ds.getCwds(getColumnWidth(fs, wiw));
-    const getCnds = () => ds.getCwds(getColumnWidth(fs, wiw)).getCnds(getColumnNo(fs, wiw));
+    const columnWidth = getColumnWidth(fs, wiw);
+    const columnNo = getColumnNo(fs, wiw)
+    const getCwds = () => ds.getCwds(columnWidth);
+    const getCnds = () => ds.getCwds(columnWidth).getCnds(columnNo);
     const [matrix, setMatrix] = useState();
-    const getItem = useRef(i => items[i]);
+    const getItem = useRef(itemIndex => ({itemIndex: itemIndex, item: items[itemIndex]}));
     const pushCellHeight = useCallback(getCwds().pushCellHeight, [wiw]);
     const pushOffsetBottom = useCallback(getCnds().pushOffsetBottom, [fs, wiw])
 
@@ -49,9 +51,9 @@ const CellArrangement = ({items,children}) => {
     let lci = getCnds().getLastCellsItemIndex();
     let chl = getCwds().cellHeights.length;
     // 如果列宽或者列数改变了
-    if (prevColumnWidth !== getColumnWidth(fs, wiw) || prevColumnNo !== getColumnNo(fs, wiw)) {
-        prevColumnWidth = getColumnWidth(fs, wiw);
-        prevColumnNo = getColumnNo(fs, wiw);
+    if (prevColumnWidth !== columnWidth || prevColumnNo !== columnNo) {
+        prevColumnWidth = columnWidth;
+        prevColumnNo = columnNo;
         if (lci + 1 === items.length) { // 为了优化性能，如果true，肯定会跑下边的if，那必然有setMatrix，这里的就省了
             setMatrix(() => getCnds().itemIndexMatrix);
         }
@@ -77,13 +79,11 @@ const CellArrangement = ({items,children}) => {
     }
 
     return (
-        <MasonryLayout matrix={matrix} getItem={getItem}
+        <MasonryLayout matrix={matrix} getItem={getItem} columnWidth={columnWidth}
                        itemIndexUnderUpdating={itemIndexUnderUpdating}
                        pushCellHeight={pushCellHeight}
                        pushOffsetBottom={pushOffsetBottom}
-        >
-            {children}
-        </MasonryLayout>
+        />
     )
 };
 

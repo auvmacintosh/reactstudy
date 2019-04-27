@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import getXs, {adaptorSDR} from './utility/getXs'
 import CellArrangement from "./CellArrangement";
-import Item from "./Item";
 
 const PAGE_SIZE = 10; // 每次拉到底的page size，本来想第一次刷新多一些，后来发现page no不好算
 let nextPage = 0; // getXs的页号
@@ -55,9 +54,7 @@ const InfiniteList = () => {
     }, []);
 
     return (
-        <CellArrangement items={items}>
-            <Item/>
-        </CellArrangement>
+        <CellArrangement items={items}/>
     )
 
 };
