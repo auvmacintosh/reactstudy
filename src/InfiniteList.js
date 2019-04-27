@@ -35,6 +35,7 @@ const InfiniteList = () => {
             getXs(apiUrl)(signal, nextPage++, PAGE_SIZE)
                 .then(adaptorSDR(apiUrl))
                 .then(response => {
+                    console.log('get new downloaded data')
                     setItems(prev => prev.concat(response.xs));
                     // 相同事件，相同callback的多次addEventListener只会被加一次
                     ifReachBottom(signal); // Recursive

@@ -22,57 +22,66 @@ let prevColumnWidth = 0; // 窗口宽度改变的时候，需要拿之前的列�
 let prevColumnNo = 0; // 窗口宽度改变的时候，需要拿之前的列数和现在的列数比较
 let itemIndexUnderUpdating = -1; // 正在更新的item的index，只有判断自己是这个item的时候，才会更新height和offsetBottom
 
-const CellArrangement = ({items, children}) => {
+const CellArrangement = ({items}) => {
     const fs = useContext(ContextFs); // Font size
     const wiw = useContext(ContextWiw); // Window inner width
     const columnWidth = getColumnWidth(fs, wiw);
     const columnNo = getColumnNo(fs, wiw)
-    const getCwds = () => ds.getCwds(columnWidth);
-    const getCnds = () => ds.getCwds(columnWidth).getCnds(columnNo);
-    const [matrix, setMatrix] = useState();
+    const cwds = ds.getCwds(columnWidth);
+    const cnds = ds.getCwds(columnWidth).getCnds(columnNo);
+    const [matrix, setMatrix] = useState([]);
     const getItem = useRef(itemIndex => ({itemIndex: itemIndex, item: items[itemIndex]}));
-    const pushCellHeight = useCallback(getCwds().pushCellHeight, [wiw]);
-    const pushOffsetBottom = useCallback(getCnds().pushOffsetBottom, [fs, wiw])
+    const pushCellHeight = useCallback(cwds.pushCellHeight, [fs, wiw]);
+    const pushOffsetBottom = useCallback(cnds.pushOffsetBottom, [fs, wiw])
 
-// let cellArrangementDS = {
-//     20: { // ColumnWidthDS
-//         2: { // ColumnNoDS
-//             itemIndexMatrix: [[], []],
-//             offsetBottomMatrix: [[], []],
-//         },
-//         3: {}, // ColumnNoDS
-//         cellHeights: [],
-//         getCnds: (cn)=>{}
-//     },
-//     30 : {},
-//
-//     getCwds: (wiw)=>{},
-// };
-    let lci = getCnds().getLastCellsItemIndex();
-    let chl = getCwds().cellHeights.length;
+    // let cellArrangementDS = {
+    //     20: { // ColumnWidthDS
+    //         2: { // ColumnNoDS
+    //             itemIndexMatrix: [[], []],
+    //             offsetBottomMatrix: [[], []],
+    //         },
+    //         3: {}, // ColumnNoDS
+    //         cellHeights: [],
+    //         getCnds: (cn) => {
+    //         }
+    //     },
+    //     30: {},
+    //
+    //     getCwds: (wiw) => {
+    //     },
+    // };
+    let lci = cnds.getLastCellsItemIndex();
+    let chl = cwds.cellHeights.length;
     // 如果列宽或者列数改变了
     if (prevColumnWidth !== columnWidth || prevColumnNo !== columnNo) {
         prevColumnWidth = columnWidth;
         prevColumnNo = columnNo;
         if (lci + 1 === items.length) { // 为了优化性能，如果true，肯定会跑下边的if，那必然有setMatrix，这里的就省了
-            setMatrix(() => getCnds().itemIndexMatrix);
+            setMatrix(() => cnds.itemIndexMatrix);
         }
     }
     if (lci + 1 < chl) {
+        console.log(cnds.itemIndexMatrix);
         for (let i = lci + 1; i < chl; i++) { // 列数改变了
-            getCnds().concatItemIndex(i);
-            getCnds().pushOffsetBottom(getCnds().getShortestColumnHeight() + getCwds().cellHeights[i])
+            cnds.concatItemIndex(i);
+            cnds.pushOffsetBottom(cnds.getShortestColumnHeight() + cwds.cellHeights[i])
+        }
+        if (chl === items.length) {
+            setMatrix(() => cnds.itemIndexMatrix);
         }
     }
-    if (chl === items.length) {
-        setMatrix(() => getCnds().itemIndexMatrix);
-    } else if (chl < items.length) {
+    if (chl < items.length) {
+        console.log("new data: " + chl + ';   ' + items.length);
         setTimeout(() => {
             // 把一次items的改变拆成一个一个item render，render之后再设置itemHeight和offsetBottom
+            console.log('callback');
             for (let i = chl; i < items.length; i++) { // 有新下载的内容
                 itemIndexUnderUpdating = i;
-                getCnds().concatItemIndex(i);
-                setMatrix(() => getCnds().itemIndexMatrix);
+                cnds.concatItemIndex(i);
+                console.log('concat' + i)
+                pushCellHeight(20);
+                pushOffsetBottom((Math.floor(i/3)+1)*20);
+                setMatrix(() => cnds.itemIndexMatrix);
                 itemIndexUnderUpdating = -1;
             }
         }, 0);
@@ -90,3 +99,5 @@ const CellArrangement = ({items, children}) => {
 CellArrangement.propTypes = {
     items: PropTypes.array.isRequired,
 };
+
+export default CellArrangement;

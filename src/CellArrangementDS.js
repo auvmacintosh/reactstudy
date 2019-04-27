@@ -1,7 +1,7 @@
 import binarySearch from "./utility/binarySearch";
 
 class CellArrangementDS {
-    getCwds(columnWidth) {
+    getCwds = (columnWidth) => {
         if (this[columnWidth] === undefined) {
             this[columnWidth] = new ColumnWidthDS();
         }
@@ -14,14 +14,14 @@ class ColumnWidthDS {
         this.cellHeights = [];
     }
 
-    getCnds(columnNo) {
+    getCnds = (columnNo) => {
         if (this[columnNo] === undefined) {
             this[columnNo] = new ColumnNoDS(columnNo);
         }
         return this[columnNo];
     }
 
-    pushCellHeight(cellHeight) {
+    pushCellHeight = (cellHeight) => {
         this.cellHeights.push(cellHeight);
     }
 }
@@ -37,7 +37,7 @@ class ColumnNoDS {
         this.offsetBottomMatrix = [...Array(columnNo)].map(() => []);
     }
 
-    getColumnHeights() {
+    getColumnHeights = () => {
         let columnNo = this.offsetBottomMatrix.length;
         return Array(columnNo).fill().map((el, idx) => {
             let tmp = this.offsetBottomMatrix[idx].tail();
@@ -45,16 +45,16 @@ class ColumnNoDS {
         }); // 空数组返回0
     };
 
-    getShortestColumnHeight() {
+    getShortestColumnHeight = () => {
         return Math.min(...this.getColumnHeights());
     };
 
-    getShortestColumnIndex() {
+    getShortestColumnIndex = () => {
         return this.getColumnHeights().indexOf(
             this.getShortestColumnHeight()); // 空矩阵返回0
     };
 
-    getLastCellsItemIndex() {
+    getLastCellsItemIndex = () => {
         let columnNo = this.itemIndexMatrix.length;
         let lastCellsItemIndices = Array(columnNo).fill().map((el, idx) => {
             let tmp = this.itemIndexMatrix[idx].tail();
@@ -63,7 +63,7 @@ class ColumnNoDS {
         return Math.max(...lastCellsItemIndices); // 空矩阵返回-1
     };
 
-    getSmallestItemIndexInViewport(scrollHeight) {
+    getSmallestItemIndexInViewport = (scrollHeight) => {
         const binarySearchSpecial = (arr, target) => { // binary search default larger变种
             let left = 0;
             let right = arr.length - 1;
@@ -91,7 +91,7 @@ class ColumnNoDS {
         return Math.min(...topItemIndicesInViewport); // 矩阵只要含有空数组就返回-1
     };
 
-    getCellsOffsetTop(itemIndex) {
+    getCellsOffsetTop = (itemIndex) => {
         let x, y;
         [x, y] = this.itemIndexMatrix
             .map(itemIndexArray => binarySearch(itemIndexArray, itemIndex))
@@ -103,19 +103,20 @@ class ColumnNoDS {
             });
         if (y === undefined) {
             throw(new Error('Can not find this item by the given index'));
-        } else if(y === 0) {
+        } else if (y === 0) {
             return 0;
         } else {
             return this.offsetBottomMatrix[x][y - 1];
         }
     };
 
-    concatItemIndex(itemIndex) { // Immutable
+    concatItemIndex = (itemIndex) => { // Immutable
         this.itemIndexMatrix = [...this.itemIndexMatrix];
-        this.itemIndexMatrix[this.getShortestColumnIndex()].concat([itemIndex]);
-    }
+        this.itemIndexMatrix[this.getShortestColumnIndex()] =
+            this.itemIndexMatrix[this.getShortestColumnIndex()].concat(itemIndex);
+    };
 
-    pushOffsetBottom(offsetBottom) {
+    pushOffsetBottom = (offsetBottom) => {
         this.offsetBottomMatrix[this.getShortestColumnIndex()].push(offsetBottom);
     };
 }

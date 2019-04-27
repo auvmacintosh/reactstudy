@@ -66,7 +66,7 @@ const MasonryLayout = ({matrix, getItem, columnWidth, itemIndexUnderUpdating, pu
     // 输入matrix是一个n*m维的矩阵，每个元素都是index
     return (
         <>
-            {Assembly(matrix)}
+            {/*{Assembly(matrix)}*/}
         </>
     );
 };
