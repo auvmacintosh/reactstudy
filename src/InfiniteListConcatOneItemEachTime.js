@@ -6,7 +6,7 @@ const PAGE_SIZE = 10; // 每次拉到底的page size，本来想第一次刷新�
 let nextPage = 0; // getXs的页号
 const controller = new AbortController();
 
-const InfiniteList = () => {
+const InfiniteListConcatOneItemEachTime = () => {
     const [items, setItems] = useState([]);
 
     const windowEventHandler = (e) => {
@@ -35,8 +35,18 @@ const InfiniteList = () => {
             getXs(apiUrl)(signal, nextPage++, PAGE_SIZE)
                 .then(adaptorSDR(apiUrl))
                 .then(response => {
-                    console.log('get new downloaded data')
-                    setItems(prev => prev.concat(response.xs));
+                    // 本来想写一个通用的InfiniteList，就是用下边这句代替再下边的for：
+                    // setItems(prev => prev.concat(response.xs));
+                    // 但是后来发现，写在这里有几个好处：
+                    // 1. 一个scroll或者resize event触发这个循环，这个循环又会触发这个render，
+                    // 但是因为下次再调用这个render的时候，不会有event，所以不会再次触发这个循环，如果没有event这个机制，
+                    // 就变成recursive的了。
+                    // 2. 这段必须得是async的，不然的话，它会把10个setItems都跑完，再跑整个渲染，
+                    // 就不是我们的初衷了，我们的初衷是跑1个setItems，跑一个渲染，getXs后边天然就是async的，因为在
+                    // then里，不用在人为的setTimeout之类的了。
+                    for (let i = 0; i < response.xs.length; i++) { // 有新下载的内容
+                        setItems(prev => prev.concat(response.xs[i]));
+                    }
                     // 相同事件，相同callback的多次addEventListener只会被加一次
                     ifReachBottom(signal); // Recursive
                 })
@@ -54,10 +64,19 @@ const InfiniteList = () => {
         };
     }, []);
 
-    return (
-        <CellArrangement items={items}/>
+    /*    return (
+            <CellArrangement items={items}/>
+        )*/
+    return ( // simplest component, just for test
+        <>
+            {items.map((item, idx) =>
+                <div key={idx}>
+                    {item._links.self.href.split('/').tail()} {item.title}
+                </div>
+            )}
+        </>
     )
 
 };
 
-export default InfiniteList;
+export default InfiniteListConcatOneItemEachTime;

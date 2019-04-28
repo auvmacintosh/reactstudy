@@ -11,7 +11,7 @@ const itemStyle = {
 
 const Item = ({item}) => (
     <div style={itemStyle}>
-        {item._links.self.href.split('/').last()} {item.title}
+        {item._links.self.href.split('/').tail()} {item.title}
     </div>
 );
 

@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDom from 'react-dom';
 import {act} from 'react-dom/test-utils';
 import './utility/tail';
-import InfiniteList from "./InfiniteList";
+import InfiniteListConcatOneItemEachTime from "./InfiniteListConcatOneItemEachTime";
 import mockArticles from './utility/articles';
 
 let container = document.createElement('div');
@@ -13,6 +13,10 @@ window.fetch = jest.fn(() => new Promise(resolve => (resolve({
     json: () => mockArticles
 }))));
 jest.spyOn(window.AbortController.prototype, 'abort');
+const Wrapper = { // jest.spyOn只能作用在object上，所以给这个function套一个object。
+    IL : InfiniteListConcatOneItemEachTime
+};
+jest.spyOn(Wrapper, 'IL');
 
 window.innerHeight = 300;
 window.scrollY = 100;
@@ -45,10 +49,13 @@ describe('fetch when the page reach bottom', () => {
     test('initial render', (done) => {
         act(() => {
             console.log('start initial render');
-            ReactDom.render(<InfiniteList/>, container);
+            ReactDom.render(<Wrapper.IL/>, container);
         });
         setTimeout(() => {
             expect(fetch).toHaveBeenCalledTimes(2);
+            // 下边的Wrapper.IL的测试是为了测试每次下载n条数据，都会拆成一条一条，分成n次渲染
+            // 下边的数字应该是上边的2*20+1这个值，20是我mock的API返回条数。
+            expect(Wrapper.IL).toHaveBeenCalledTimes(41);
             console.log('finish initial render');
             done();
         }, 0);
@@ -64,6 +71,7 @@ describe('fetch when the page reach bottom', () => {
         });
         setTimeout(() => {
             expect(fetch).toHaveBeenCalledTimes(4);
+            expect(Wrapper.IL).toHaveBeenCalledTimes(81);
             console.log('finish resize event');
             done();
         }, 0);
@@ -79,6 +87,7 @@ describe('fetch when the page reach bottom', () => {
         });
         setTimeout(() => {
             expect(fetch).toHaveBeenCalledTimes(6);
+            expect(Wrapper.IL).toHaveBeenCalledTimes(121);
             console.log('finish scroll event');
             done();
         }, 0);

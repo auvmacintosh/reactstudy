@@ -5,11 +5,11 @@ import './utility/tail';
 import 'normalize.css'
 import * as serviceWorker from './serviceWorker';
 import GlobalState from "./GlobalState";
-import InfiniteList from "./InfiniteList";
+import InfiniteListConcatOneItemEachTime from "./InfiniteListConcatOneItemEachTime";
 
 ReactDOM.render((
     <GlobalState>
-        <InfiniteList/>
+        <InfiniteListConcatOneItemEachTime/>
     </GlobalState>
 ), document.getElementById('root'));
 
