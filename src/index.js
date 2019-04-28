@@ -4,19 +4,24 @@ import './index.css';
 import './utility/tail';
 import 'normalize.css'
 import * as serviceWorker from './serviceWorker';
-import GlobalState from "./GlobalState";
-import InfiniteListConcatOneItemEachTime from "./InfiniteListConcatOneItemEachTime";
-
-ReactDOM.render((
-    <GlobalState>
-        <InfiniteListConcatOneItemEachTime/>
-    </GlobalState>
-), document.getElementById('root'));
+// import GlobalState from "./GlobalState";
+// import InfiniteListConcatOneItemEachTime from "./InfiniteListConcatOneItemEachTime";
+//
+// ReactDOM.render((
+//     <GlobalState>
+//         <InfiniteListConcatOneItemEachTime/>
+//     </GlobalState>
+// ), document.getElementById('root'));
 
 // import Test from "./stage4_test/TestRenderOneByOne";
 // ReactDOM.render((
 //     <Test/>
 // ), document.getElementById('root'));
+
+import T from "./stage4_test/T"
+ReactDOM.render((
+    <T/>
+), document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

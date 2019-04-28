@@ -64,18 +64,18 @@ const InfiniteListConcatOneItemEachTime = () => {
         };
     }, []);
 
-    /*    return (
-            <CellArrangement items={items}/>
-        )*/
-    return ( // simplest component, just for test
-        <>
-            {items.map((item, idx) =>
-                <div key={idx}>
-                    {item._links.self.href.split('/').tail()} {item.title}
-                </div>
-            )}
-        </>
+    return (
+        <CellArrangement items={items}/>
     )
+    // return ( // simplest component, just for test
+    //     <>
+    //         {items.map((item, idx) =>
+    //             <div key={idx}>
+    //                 {item._links.self.href.split('/').tail()} {item.title}
+    //             </div>
+    //         )}
+    //     </>
+    // )
 
 };
 

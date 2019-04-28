@@ -6,8 +6,8 @@ const DEBOUNDING_TIMEOUT = 1000; // 这么多ms没有resize以后才会开始重
 let debouncingTimer = -1; // resize debouncing timer
 
 const App = ({children}) => {
-    const [stateWiw, setWiw] = useState(300); // 窗口宽度state
-    const [stateFs, setFs] = useState(16); // 字体大小state
+    const [stateWiw, setWiw] = useState(window.innerWidth); // 窗口宽度state
+    const [stateFs, setFs] = useState(parseFloat(window.getComputedStyle(document.body).fontSize)); // 字体大小state
 
     const handleEventDone = () => {
         setWiw(window.innerWidth);
