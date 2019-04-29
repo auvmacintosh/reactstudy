@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
 import {act} from 'react-dom/test-utils';
 
-// const App = () => { // 跟下边的class是同样的功能，只是换了function的写法。test会报act错误，这是一个bug。
+// const WindowState = () => { // 跟下边的class是同样的功能，只是换了function的写法。test会报act错误，这是一个bug。
 //     const [x, setX] = useState('before');
 //
 //     const handler = (e) => {
@@ -58,7 +58,7 @@ test('fire a event that will set state',
 // import axios from 'axios';
 // import a from './articles.json';
 // import {render, fireEvent, wait} from 'react-testing-library';
-// import App from '../App';
+// import WindowState from '../WindowState';
 
 // jest.mock('axios');
 
@@ -67,7 +67,7 @@ test('fire a event that will set state',
 //         axios.get.mockResolvedValue({data: a});
 //         let el = document.createElement('div');
 //         act(() => {
-//             ReactDOM.render(<App/>, el);
+//             ReactDOM.render(<WindowState/>, el);
 //         });
 //         document.body.appendChild(el); // 如果不append上去，document.getxxx就找不到这个element，也不能触发event
 //         act(() => {
@@ -95,7 +95,7 @@ test('fire a event that will set state',
 //         });
 //         let el = document.createElement('div');
 //         act(() => {
-//             ReactDOM.render(<App/>, el);
+//             ReactDOM.render(<WindowState/>, el);
 //         });
 //         document.body.appendChild(el); // 如果不append上去，document.getxxx就找不到这个element
 //         document.getElementById('searchbutton').dispatchEvent(new MouseEvent('click', {bubbles: true}));
@@ -109,7 +109,7 @@ test('fire a event that will set state',
 // xtest('displays titles when clicking Search',
 //     async () => {
 //         axios.get.mockResolvedValue({data: a});
-//         const {getByText, getByTestId} = render(<App/>);
+//         const {getByText, getByTestId} = render(<WindowState/>);
 //         fireEvent.click(getByText('Search'));
 //         await wait(() => getByTestId('search-result'));
 //         expect(axios.get).toHaveBeenCalledTimes(1);

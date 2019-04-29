@@ -1,8 +1,7 @@
 import React from 'react';
 import ReactDom from 'react-dom';
 import {act} from 'react-dom/test-utils';
-import GlobalState from './WindowState';
-import {ContextFs, ContextWiw} from "./WindowState";
+import WindowState, {DEBOUNDING_TIMEOUT} from './WindowState';
 
 // getFirstLabelByInnerHTML will get this element if the pattern is /Window Inner Width: */
 // <label>
@@ -13,61 +12,56 @@ const getFirstLabelByInnerHTMLPattern = pattern => {
     return Array.from(document.querySelectorAll('label')).find(el => pattern.test(el.innerHTML));
 };
 
-const GlobalStateMockChildren = () => {
-    const wiw = React.useContext(ContextWiw); // Window inner width
-    const fs = React.useContext(ContextFs); // Font size
-
+jest.mock('./InfiniteListConcatOneItemEachTime', () => ({fs, wiw}) => {
+    console.log(fs + " " + wiw)
     return (
         <>
+            <label>
+                {'Font Size: '}
+                <span>{fs.toString()}</span>
+            </label>
             <label>
                 {'Window Inner Width: '}
                 <span>{wiw.toString()}</span>
             </label>
             <br/>
-            <label>
-                {'Font Size: '}
-                <span>{fs.toString()}</span>
-            </label>
         </>
     )
-};
+});
 
 let container = document.createElement('div');
 document.body.appendChild(container);
-let elementWiw;
-let elementFs;
 
 describe('WindowState Component', () => {
+        window.getComputedStyle = () => ({fontSize: '16px'});
+        window.innerWidth = 500;
         act(() => {
             ReactDom.render(
-                <GlobalState>
-                    <GlobalStateMockChildren/>
-                </GlobalState>
+                <WindowState/>
                 , container);
         });
-        elementWiw = getFirstLabelByInnerHTMLPattern(/window inner width/i).lastChild;
-        elementFs = getFirstLabelByInnerHTMLPattern(/font size/i).lastChild;
+        let elementFs = getFirstLabelByInnerHTMLPattern(/font size/i).lastChild;
+        let elementWiw = getFirstLabelByInnerHTMLPattern(/window inner width/i).lastChild;
 
-        test('resize window inner width', (done) => {
-            window.innerWidth = 500;
-            act(() => {
-                window.dispatchEvent(new Event('resize'));
-            });
+        test('initial state', (done) => {
             setTimeout(() => {
+                expect(elementFs.innerHTML).toBe('16');
                 expect(elementWiw.innerHTML).toBe('500');
                 done();
             }, 0);
         });
 
-        test('change fontsize', (done) => {
+        test('resize', (done) => {
             window.getComputedStyle = () => ({fontSize: '18px'});
+            window.innerWidth = 800;
             act(() => {
                 window.dispatchEvent(new Event('resize'));
             });
             setTimeout(() => {
                 expect(elementFs.innerHTML).toBe('18');
+                expect(elementWiw.innerHTML).toBe('800');
                 done();
-            }, 0);
+            }, DEBOUNDING_TIMEOUT);
         });
     }
 );
@@ -79,5 +73,5 @@ test('remove eventListener when unmount', (done) => {
     });
     setTimeout(() => {
         done();
-  }, 0);
+    }, 0);
 });

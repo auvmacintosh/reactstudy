@@ -21,14 +21,6 @@ jest.spyOn(Wrapper, 'IL');
 window.innerHeight = 300;
 window.scrollY = 100;
 let idx = 0;
-Object.defineProperty(document.body, 'clientHeight', {
-    get: jest.fn(() => {
-        let returnArray = [300, 400, 500];
-        console.log(returnArray[idx % returnArray.length]);
-        return returnArray[idx++ % returnArray.length];
-    })
-});
-
 // expected output:
 // start initial render
 // 300
@@ -45,6 +37,14 @@ Object.defineProperty(document.body, 'clientHeight', {
 // 400
 // 500
 // finish scroll event
+Object.defineProperty(document.body, 'clientHeight', {
+    get: jest.fn(() => {
+        let returnArray = [300, 400, 500];
+        console.log(returnArray[idx % returnArray.length]);
+        return returnArray[idx++ % returnArray.length];
+    })
+});
+
 describe('fetch when the page reach bottom', () => {
     test('initial render', (done) => {
         act(() => {

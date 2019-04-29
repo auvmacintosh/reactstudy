@@ -1,10 +1,10 @@
 import React, {useState, useEffect} from 'react';
 import InfiniteListConcatOneItemEachTime from "./InfiniteListConcatOneItemEachTime";
 
-const DEBOUNDING_TIMEOUT = 500; // 这么多ms没有resize以后才会开始重新布局
+export const DEBOUNDING_TIMEOUT = 500; // 这么多ms没有resize以后才会开始重新布局
 let debouncingTimer = -1; // resize debouncing timer
 
-const App = () => {
+const WindowState = () => {
     const [wiw, setWiw] = useState(window.innerWidth); // 窗口宽度state
     const [fs, setFs] = useState(parseFloat(window.getComputedStyle(document.body).fontSize)); // 字体大小state
 
@@ -38,4 +38,4 @@ const App = () => {
     )
 };
 
-export default App;
+export default WindowState;
