@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDom from 'react-dom';
 import {act} from 'react-dom/test-utils';
-import GlobalState from './GlobalState';
-import {ContextFs, ContextWiw} from "./GlobalState";
+import GlobalState from './WindowState';
+import {ContextFs, ContextWiw} from "./WindowState";
 
 // getFirstLabelByInnerHTML will get this element if the pattern is /Window Inner Width: */
 // <label>
@@ -37,7 +37,7 @@ document.body.appendChild(container);
 let elementWiw;
 let elementFs;
 
-describe('GlobalState Component', () => {
+describe('WindowState Component', () => {
         act(() => {
             ReactDom.render(
                 <GlobalState>
@@ -79,5 +79,5 @@ test('remove eventListener when unmount', (done) => {
     });
     setTimeout(() => {
         done();
-    }, 0);
+  }, 0);
 });

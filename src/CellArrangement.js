@@ -1,6 +1,5 @@
 import React, {useState, useContext, useRef, useCallback} from 'react';
 import PropTypes from "prop-types";
-import {ContextFs, ContextWiw} from "./GlobalState";
 import CellArrangementDS from "./CellArrangementDS";
 import MasonryLayout from "./MasonryLayout";
 
@@ -21,10 +20,7 @@ let ds = new CellArrangementDS();
 let prevColumnWidth = 0; // 窗口宽度改变的时候，需要拿之前的列宽和现在的列宽比较
 let prevColumnNo = 0; // 窗口宽度改变的时候，需要拿之前的列数和现在的列数比较
 
-const CellArrangement = ({items}) => {
-    const fs = useContext(ContextFs); // Font size
-    const wiw = useContext(ContextWiw); // Window inner width
-    console.log(fs + ' ' + wiw)
+const CellArrangement = ({items, fs, wiw}) => {
     const columnWidth = getColumnWidth(fs, wiw);
     const columnNo = getColumnNo(fs, wiw);
     const cwds = ds.getCwds(columnWidth);

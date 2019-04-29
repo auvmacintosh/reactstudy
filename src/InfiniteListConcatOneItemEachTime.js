@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import getXs, {adaptorSDR} from './utility/getXs'
 import CellArrangement from "./CellArrangement";
 
@@ -6,7 +6,7 @@ const PAGE_SIZE = 10; // 每次拉到底的page size，本来想第一次刷新�
 let nextPage = 0; // getXs的页号
 const controller = new AbortController();
 
-const InfiniteListConcatOneItemEachTime = () => {
+const InfiniteListConcatOneItemEachTime = ({fs, wiw}) => {
     const [items, setItems] = useState([]);
 
     const windowEventHandler = (e) => {
@@ -24,10 +24,12 @@ const InfiniteListConcatOneItemEachTime = () => {
     };
 
     const ifReachBottom = signal => {
+        console.debug('check if reach bottom');
         // 需要用>=判断，如果用===判断，页面比窗口短的时候或者有滚动条的时候，就不会触发。
         // 但是用>=有一个问题就是会连续触发，这时候需要先removeEventListener再add上去
         // +n的原因是，这个尺寸的测量值不准，所以必须得留富裕
         if ((window.innerHeight + window.scrollY + 10) >= document.body.clientHeight) {
+            console.debug('getXs');
             // if ((window.innerHeight + window.scrollY + 10) >= document.body.clientHeight) {
             ['scroll', 'resize'].forEach(e => window.removeEventListener(e, windowEventHandler));
             // remove不存在的eventListener不会报错
@@ -55,27 +57,30 @@ const InfiniteListConcatOneItemEachTime = () => {
         }
     };
 
-    useEffect(() => {
-        ifReachBottom(controller.signal);
+    useEffect(()=>{
         ['scroll', 'resize'].forEach(e => window.addEventListener(e, windowEventHandler));
         return () => {
             ['scroll', 'resize'].forEach(e => window.removeEventListener(e, windowEventHandler));
             controller.abort();
         };
-    }, []);
+    },[]);
 
-    return (
-        <CellArrangement items={items}/>
-    )
-    // return ( // simplest component, just for test
-    //     <>
-    //         {items.map((item, idx) =>
-    //             <div key={idx}>
-    //                 {item._links.self.href.split('/').tail()} {item.title}
-    //             </div>
-    //         )}
-    //     </>
+    useEffect(() => {
+        ifReachBottom(controller.signal);
+    }, [fs, wiw]);
+
+    // return (
+    //     <CellArrangement items={items} fs={fs} wiw={wiw}/>
     // )
+    return ( // simplest component, just for test
+        <>
+            {items.map((item, idx) =>
+                <div key={idx}>
+                    {item._links.self.href.split('/').tail()} {item.title}
+                </div>
+            )}
+        </>
+    )
 
 };
 

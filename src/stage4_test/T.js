@@ -4,16 +4,16 @@ const T = () => {
     const [state, setState] = useState(0);
 
     useEffect(() => {
-        console.log('T useEffect');
-        console.log(state);
+        console.debug('T useEffect');
+        console.debug(state);
         if (state < 6) {
             setState(prev => prev + 1);
         }
         return () => {
-            console.log('T useEffect return')
+            console.debug('T useEffect return')
         }
     }, [state]);
-    console.log('T render')
+    console.debug('T render')
     return (
         <>
             T
@@ -24,12 +24,12 @@ const T = () => {
 };
 const A = ({state}) => {
     useEffect(() => {
-        console.log('A useEffect');
+        console.debug('A useEffect');
         return () => {
-            console.log('A useEffect return')
+            console.debug('A useEffect return')
         }
     }, [state]);
-    console.log('A render')
+    console.debug('A render')
     return (
         <>
             A

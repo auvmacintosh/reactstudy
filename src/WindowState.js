@@ -1,15 +1,15 @@
 import React, {useState, useEffect} from 'react';
+import InfiniteListConcatOneItemEachTime from "./InfiniteListConcatOneItemEachTime";
 
-export const ContextWiw = React.createContext(300); // px Window InnerwidthContext
-export const ContextFs = React.createContext(16); // px Fontsize大小Context
-const DEBOUNDING_TIMEOUT = 1000; // 这么多ms没有resize以后才会开始重新布局
+const DEBOUNDING_TIMEOUT = 500; // 这么多ms没有resize以后才会开始重新布局
 let debouncingTimer = -1; // resize debouncing timer
 
-const App = ({children}) => {
-    const [stateWiw, setWiw] = useState(window.innerWidth); // 窗口宽度state
-    const [stateFs, setFs] = useState(parseFloat(window.getComputedStyle(document.body).fontSize)); // 字体大小state
+const App = () => {
+    const [wiw, setWiw] = useState(window.innerWidth); // 窗口宽度state
+    const [fs, setFs] = useState(parseFloat(window.getComputedStyle(document.body).fontSize)); // 字体大小state
 
     const handleEventDone = () => {
+        console.debug('setWiw and setFs');
         setWiw(window.innerWidth);
         setFs(parseFloat(window.getComputedStyle(document.body).fontSize));
     };
@@ -19,7 +19,7 @@ const App = ({children}) => {
             case 'resize':
                 clearTimeout(debouncingTimer);
                 // RESIZE_DONE_TIMEOUT(例如100)ms没有resize以后再重新布局；
-                debouncingTimer = setTimeout(handleEventDone(), DEBOUNDING_TIMEOUT);
+                debouncingTimer = setTimeout(handleEventDone, DEBOUNDING_TIMEOUT);
                 break;
             default:
                 throw(new Error('No such event.'));
@@ -33,13 +33,8 @@ const App = ({children}) => {
         };
     }, []);
 
-
     return (
-        <ContextWiw.Provider value={stateWiw}>
-            <ContextFs.Provider value={stateFs}>
-                {children}
-            </ContextFs.Provider>
-        </ContextWiw.Provider>
+        <InfiniteListConcatOneItemEachTime fs={fs} wiw={wiw}/>
     )
 };
 
