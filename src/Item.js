@@ -9,11 +9,14 @@ const itemStyle = {
     alignItems: 'center',
 };
 
-const Item = ({item}) => (
-    <div style={itemStyle}>
-        {item._links.self.href.split('/').tail()} {item.title}
-    </div>
-);
+const Item = ({item}) => {
+    return (
+        <div style={itemStyle}>
+            {item._links.self.href.split('/').tail()} {item.title}
+        </div>
+    )
+    // return <div>hello</div>
+};
 
 // 调用方法 <Item item={item} />
 Item.propTypes = {

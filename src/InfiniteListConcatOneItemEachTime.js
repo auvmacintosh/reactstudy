@@ -69,18 +69,18 @@ const InfiniteListConcatOneItemEachTime = ({fs, wiw}) => {
         ifReachBottom(controller.signal);
     }, [fs, wiw]);
 
-    // return (
-    //     <CellArrangement items={items} fs={fs} wiw={wiw}/>
-    // )
-    return ( // simplest component, just for test
-        <>
-            {items.map((item, idx) =>
-                <div key={idx}>
-                    {item._links.self.href.split('/').tail()} {item.title}
-                </div>
-            )}
-        </>
+    return (
+        <CellArrangement items={items} fs={fs} wiw={wiw}/>
     )
+    // return ( // simplest component, just for test
+    //     <>
+    //         {items.map((item, idx) =>
+    //             <div key={idx}>
+    //                 {item._links.self.href.split('/').tail()} {item.title}
+    //             </div>
+    //         )}
+    //     </>
+    // )
 
 };
 

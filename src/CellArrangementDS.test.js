@@ -20,6 +20,8 @@ test('new cnds', () => {
     ds.getCwds(cw).getCnds(cn);
     expect(ds[cw][cn].itemIndexMatrix)
         .toEqual([...Array(cn)].map(() => []));
+    expect(ds[cw][cn].getLastCellsItemIndex())
+        .toEqual(-1);
 });
 
 test('concat item and push offset bottom', () => {
