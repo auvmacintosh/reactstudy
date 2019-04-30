@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState, useEffect} from 'react';
 import getXs, {adaptorSDR} from './utility/getXs'
 import CellArrangement from "./CellArrangement";
 

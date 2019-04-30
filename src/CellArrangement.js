@@ -31,8 +31,8 @@ const CellArrangement = ({items, fs, wiw}) => {
     const [matrix, setMatrix] = useState(cnds.itemIndexMatrix);
 
     const getItem = useCallback(itemIndex => ({item: items[itemIndex], itemIndex: itemIndex}), [items]); //useRef 报错
-    const pushCellHeight = useCallback(cwds.pushCellHeight, [cwds]);
-    const pushOffsetBottom = useCallback(cnds.pushOffsetBottom, [cnds]);
+    const concatCellHeight = useCallback(cwds.concatCellHeight, [cwds]);
+    const concatOffsetBottom = useCallback(cnds.concatOffsetBottom, [cnds]);
 
     // let cellArrangementDS = {
     //     20: { // ColumnWidthDS
@@ -62,7 +62,7 @@ const CellArrangement = ({items, fs, wiw}) => {
             console.debug('this cnds.itemIndexMatrix need to append some old items')
             for (let i = lci + 1; i < chl; i++) {
                 cnds.concatItemIndex(i);
-                cnds.pushOffsetBottom(cnds.getShortestColumnHeight() + cwds.cellHeights[i])
+                cnds.concatOffsetBottom(cnds.getShortestColumnHeight() + cwds.cellHeights[i])
             }
         }
         setMatrix(cnds.itemIndexMatrix);
@@ -74,8 +74,8 @@ const CellArrangement = ({items, fs, wiw}) => {
             console.debug('il changed, should concat the new item ' + (il - 1));
             setItemIndexUnderUpdating(il - 1);
             cnds.concatItemIndex(il - 1);
-            pushCellHeight(36);
-            pushOffsetBottom((Math.floor(chl / columnNo) + 1) * 36);
+            // concatCellHeight(36);
+            // concatOffsetBottom((Math.floor(chl / columnNo) + 1) * 36);
             console.debug(cnds.itemIndexMatrix)
             console.debug(cnds.offsetBottomMatrix)
         }
@@ -85,8 +85,8 @@ const CellArrangement = ({items, fs, wiw}) => {
     return (
         <MasonryLayout matrix={matrix} columnWidth={columnWidth}
                        getItem={getItem}
-                       pushCellHeight={pushCellHeight}
-                       pushOffsetBottom={pushOffsetBottom}
+                       concatCellHeight={concatCellHeight}
+                       concatOffsetBottom={concatOffsetBottom}
         />
     )
     // return <div>hello</div>

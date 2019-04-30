@@ -22,8 +22,8 @@ class ColumnWidthDS {
         return this[columnNo];
     };
 
-    pushCellHeight = (cellHeight) => {
-        this.cellHeights.push(cellHeight);
+    concatCellHeight = (cellHeight) => { // Immutable
+        this.cellHeights = this.cellHeights.concat(cellHeight);
     };
 }
 
@@ -118,8 +118,10 @@ class ColumnNoDS {
             this.itemIndexMatrix[this.getShortestColumnIndex()].concat(itemIndex);
     };
 
-    pushOffsetBottom = (offsetBottom) => {
-        this.offsetBottomMatrix[this.getShortestColumnIndex()].push(offsetBottom);
+    concatOffsetBottom = (offsetBottom) => {
+        this.offsetBottomMatrix = [...this.offsetBottomMatrix];
+        this.offsetBottomMatrix[this.getShortestColumnIndex()] =
+            this.offsetBottomMatrix[this.getShortestColumnIndex()].concat(offsetBottom);
     };
 }
 

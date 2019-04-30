@@ -11,7 +11,7 @@ test('new cwds', () => {
 
 test('push cell height', () => {
     const ch = 20;
-    ds.getCwds(cw).pushCellHeight(ch);
+    ds.getCwds(cw).concatCellHeight(ch);
     expect(ds[cw].cellHeights)
         .toEqual([ch]);
 });
@@ -26,11 +26,11 @@ test('new cnds', () => {
 
 test('concat item and push offset bottom', () => {
     ds.getCwds(cw).getCnds(cn).concatItemIndex(0);
-    ds.getCwds(cw).getCnds(cn).pushOffsetBottom(20);
+    ds.getCwds(cw).getCnds(cn).concatOffsetBottom(20);
     ds.getCwds(cw).getCnds(cn).concatItemIndex(1);
-    ds.getCwds(cw).getCnds(cn).pushOffsetBottom(30);
+    ds.getCwds(cw).getCnds(cn).concatOffsetBottom(30);
     ds.getCwds(cw).getCnds(cn).concatItemIndex(2);
-    ds.getCwds(cw).getCnds(cn).pushOffsetBottom(40);
+    ds.getCwds(cw).getCnds(cn).concatOffsetBottom(40);
     expect(ds[cw][cn].offsetBottomMatrix)
         .toEqual([[20, 40], [30]]);
     expect(ds[cw][cn].itemIndexMatrix)

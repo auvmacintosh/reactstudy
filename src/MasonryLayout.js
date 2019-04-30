@@ -9,8 +9,8 @@ const idxMp = R.addIndex(R.map);
 const MasonryLayout = memo(({
                                 matrix, columnWidth,
                                 getItem,
-                                pushCellHeight,
-                                pushOffsetBottom
+                                concatCellHeight,
+                                concatOffsetBottom
                             }) => {
     // console.log(getItem(0))
     const columnNo = matrix.length;
@@ -51,11 +51,11 @@ const MasonryLayout = memo(({
         if (itemIndex === itemIndexUnderUpdating) {
             // const cellHeight = ref.current.clientHeight;
             // const cellOffsetBottom = ref.current.offsetTop + cellHeight;
-            // pushCellHeight(cellHeight);
-            // pushOffsetBottom(cellOffsetBottom);
+            // concatCellHeight(cellHeight);
+            // concatOffsetBottom(cellOffsetBottom);
             console.log('push height ' + itemIndex)
-            pushCellHeight(36);
-            pushOffsetBottom((Math.floor(itemIndex / columnNo) + 1) * 36);
+            concatCellHeight(36);
+            concatOffsetBottom((Math.floor(itemIndex / columnNo) + 1) * 36);
             setItemIndexUnderUpdating(-1);
         }
 
@@ -69,8 +69,8 @@ const MasonryLayout = memo(({
     // const cell = ({item, itemIndex}) => {
     //     useEffect(() => {
     //         if (itemIndex === itemIndexUnderUpdating) {
-    //             pushCellHeight(36);
-    //             pushOffsetBottom((Math.floor(itemIndex / columnNo) + 1) * 36);
+    //             concatCellHeight(36);
+    //             concatOffsetBottom((Math.floor(itemIndex / columnNo) + 1) * 36);
     //             setItemIndexUnderUpdating(-1);
     //         }
     //     }, []);
