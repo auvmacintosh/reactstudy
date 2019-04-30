@@ -24,15 +24,17 @@ const InfiniteListConcatOneItemEachTime = ({fs, wiw}) => {
     };
 
     const ifReachBottom = signal => {
-        console.debug('check if reach bottom');
+        // todo: 后边的渲染在这个判断后边发生，导致document.body.clientHeight还是旧的比较长的值，
+        // 渲染完最后实际已经到底了，但判断为没到底。
+        console.debug('check if reach bottom '
+            + (window.innerHeight + window.scrollY + 10) + '  ' + document.body.clientHeight);
         // 需要用>=判断，如果用===判断，页面比窗口短的时候或者有滚动条的时候，就不会触发。
         // 但是用>=有一个问题就是会连续触发，这时候需要先removeEventListener再add上去
         // +n的原因是，这个尺寸的测量值不准，所以必须得留富裕
         if ((window.innerHeight + window.scrollY + 10) >= document.body.clientHeight) {
-            console.debug('getXs');
-            // if ((window.innerHeight + window.scrollY + 10) >= document.body.clientHeight) {
-            ['scroll', 'resize'].forEach(e => window.removeEventListener(e, windowEventHandler));
+            console.debug('is reach bottom, should getXs');
             // remove不存在的eventListener不会报错
+            ['scroll', 'resize'].forEach(e => window.removeEventListener(e, windowEventHandler));
             const apiUrl = '/api/articles';
             getXs(apiUrl)(signal, nextPage++, PAGE_SIZE)
                 .then(adaptorSDR(apiUrl))
@@ -57,13 +59,13 @@ const InfiniteListConcatOneItemEachTime = ({fs, wiw}) => {
         }
     };
 
-    useEffect(()=>{
+    useEffect(() => {
         ['scroll', 'resize'].forEach(e => window.addEventListener(e, windowEventHandler));
         return () => {
             ['scroll', 'resize'].forEach(e => window.removeEventListener(e, windowEventHandler));
             controller.abort();
         };
-    },[]);
+    }, []);
 
     useEffect(() => {
         ifReachBottom(controller.signal);

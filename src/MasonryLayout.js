@@ -45,43 +45,35 @@ const MasonryLayout = memo(({
         border: '0',
     };
     const cell = ({item, itemIndex}) => {
-        // const ref = useRef(null);
-        // console.log(itemIndex + ' ' + itemIndexUnderUpdating);
-        // todo: 测量真正的高度
-        if (itemIndex === itemIndexUnderUpdating) {
-            // const cellHeight = ref.current.clientHeight;
-            // const cellOffsetBottom = ref.current.offsetTop + cellHeight;
-            // concatCellHeight(cellHeight);
-            // concatOffsetBottom(cellOffsetBottom);
-            console.log('push height ' + itemIndex)
-            concatCellHeight(36);
-            concatOffsetBottom((Math.floor(itemIndex / columnNo) + 1) * 36);
-            setItemIndexUnderUpdating(-1);
-        }
-
         return (
             <div key={itemIndex} style={cellStyle}>
-                <Item item={item}/>
+                <CellLining item={item} itemIndex={itemIndex}/>
             </div>
         )
     };
+    const CellLining = memo(({item, itemIndex}) => {
+        const ref = useRef(null);
+        console.debug('cell lining')
+        useEffect(() => {
+            if (itemIndex === itemIndexUnderUpdating) {
+                const cellHeight = ref.current.clientHeight;
+                const cellOffsetBottom = ref.current.offsetTop + cellHeight;
+                concatCellHeight(cellHeight);
+                concatOffsetBottom(cellOffsetBottom);
+                // concatCellHeight(36);
+                // concatOffsetBottom((Math.floor(itemIndex / columnNo) + 1) * 36);
+                setItemIndexUnderUpdating(-1);
+            }
+        }, []);
 
-    // const cell = ({item, itemIndex}) => {
-    //     useEffect(() => {
-    //         if (itemIndex === itemIndexUnderUpdating) {
-    //             concatCellHeight(36);
-    //             concatOffsetBottom((Math.floor(itemIndex / columnNo) + 1) * 36);
-    //             setItemIndexUnderUpdating(-1);
-    //         }
-    //     }, []);
-    //
-    //     return (
-    //         <div key={itemIndex} style={cellStyle}>
-    //             <Item item={item}/>
-    //         </div>
-    //     )
-    // };
+        return (
+            <div ref={ref}>
+                <Item item={item}/>
+            </div>
+        )
+    });
 
+    // todo: 这种方式不能用memo了特别慢，每次加一个cell，都得把所有cell全部重新渲染。
     // map(f)就是一层递归，也就是对Array里的每个元素使用f函数
     // map(map(f))就是两层递归
     const assembly = R.compose( // compose的作用就是把下边的函数串联起来
