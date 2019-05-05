@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useCallback} from 'react';
 import PropTypes from "prop-types";
-import CellArrangementDS from "./CellArrangementDS";
+import MasonryDS from "./MasonryDS";
 import Table from "./MasonryLayout";
 
 const MIN_COLUMN_NO = 1; // 最少这么多列
@@ -12,7 +12,7 @@ export let itemIndexUnderUpdating = -1;
 export const setItemIndexUnderUpdating = (i) => {
     itemIndexUnderUpdating = i;
 };
-let ds = new CellArrangementDS();
+let ds = new MasonryDS();
 // 当宽度小到一定程度，判断为手机用户，尽量占满屏幕
 const getColumnWidth = (fs, wiw) => {
     const defaultColumnWidth = 20;
@@ -33,7 +33,7 @@ const getColumnNo = (fs, wiw) => {
     return Math.max(MIN_COLUMN_NO, completeColumnNo);
 };
 
-const CellArrangement = ({items, fs, wiw}) => {
+const MasonryArrangement = ({items, fs, wiw}) => {
     const columnWidth = getColumnWidth(fs, wiw);
     const columnNo = getColumnNo(fs, wiw);
     const cwds = ds.getCwds(columnWidth);
@@ -103,8 +103,8 @@ const CellArrangement = ({items, fs, wiw}) => {
     // return <div>hello</div>
 };
 
-CellArrangement.propTypes = {
+MasonryArrangement.propTypes = {
     items: PropTypes.array.isRequired,
 };
 
-export default CellArrangement;
+export default MasonryArrangement;

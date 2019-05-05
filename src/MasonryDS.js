@@ -1,7 +1,7 @@
 import binarySearch from "./utility/binarySearch";
 import './utility/tail';
 
-class CellArrangementDS {
+class MasonryDS {
     getCwds = (columnWidth) => {
         if (this[columnWidth] === undefined) {
             this[columnWidth] = new ColumnWidthDS();
@@ -125,7 +125,7 @@ class ColumnNoDS {
     };
 }
 
-export default CellArrangementDS;
+export default MasonryDS;
 
 // let cellArrangementDS = {
 //     20: { // ColumnWidthDS

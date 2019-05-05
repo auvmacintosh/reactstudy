@@ -1,4 +1,4 @@
-import DS from './CellArrangementDS';
+import DS from './MasonryDS';
 
 const ds = new DS();
 const cw = 20;

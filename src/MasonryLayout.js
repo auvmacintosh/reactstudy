@@ -1,7 +1,7 @@
 import React, {useRef, useEffect, memo} from 'react';
 import PropTypes from "prop-types";
 // MasonryLayout跟CellArrangement的耦合度很高，需要引入参数和方法
-import {HALF_GAP, itemIndexUnderUpdating, setItemIndexUnderUpdating} from "./CellArrangement";
+import {HALF_GAP, itemIndexUnderUpdating, setItemIndexUnderUpdating} from "./MasonryArrangement";
 import Item from "./Item";
 
 const Table = memo(({
