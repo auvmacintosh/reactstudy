@@ -1,17 +1,15 @@
 import React, {useRef, useEffect, memo} from 'react';
 import PropTypes from "prop-types";
-import * as R from "ramda";
+// MasonryLayout跟CellArrangement的耦合度很高，需要引入参数和方法
 import {HALF_GAP, itemIndexUnderUpdating, setItemIndexUnderUpdating} from "./CellArrangement";
 import Item from "./Item";
 
-const idxMp = R.addIndex(R.map);
-
-const MasonryLayout = memo(({
-                                matrix, columnWidth,
-                                getItem,
-                                concatCellHeight,
-                                concatOffsetBottom
-                            }) => {
+const Table = memo(({
+                        matrix, columnWidth,
+                        getItem,
+                        concatCellHeight,
+                        concatOffsetBottom
+                    }) => {
     // console.log(getItem(0))
     const columnNo = matrix.length;
 
@@ -22,77 +20,83 @@ const MasonryLayout = memo(({
         padding: HALF_GAP + 'rem',
         minWidth: (columnWidth * columnNo) + 'rem',
     };
-    const table = columns => (
-        <div style={tableStyle}>
-            {columns}
-        </div>
-    );
 
+    return (
+        <div style={tableStyle}>
+            {matrix.map((column, columnIndex) => {
+                return (
+                    <Column key={columnIndex}
+                            column={column} columnWidth={columnWidth}
+                            getItem={getItem}
+                            concatCellHeight={concatCellHeight}
+                            concatOffsetBottom={concatOffsetBottom}
+                    />
+                )
+            })}
+        </div>
+    )
+}, (prev, next) => {
+    return prev.matrix === next.matrix && prev.columnWidth === next.columnWidth
+});
+
+const Column = memo(({
+                         column, columnWidth,
+                         getItem,
+                         concatCellHeight,
+                         concatOffsetBottom
+                     }) => {
     const columnStyle = {
         display: 'flex',
         flexDirection: 'column',
         width: columnWidth + 'rem',
     };
-    const column = (items, i) => (
-        <div key={i} style={columnStyle}>
-            {items}
-        </div>
-    );
 
+    return (
+        <div style={columnStyle}>
+            {column.map(itemIndex => {
+                return (
+                    <Cell key={itemIndex}
+                          itemIndex={itemIndex} item={getItem(itemIndex)}
+                          concatCellHeight={concatCellHeight}
+                          concatOffsetBottom={concatOffsetBottom}
+                    />
+                )
+            })}
+        </div>
+    )
+}, (prev, next) => {
+    return prev.column === next.column && prev.columnWidth === next.columnWidth
+});
+
+const Cell = memo(({
+                       itemIndex, item,
+                       concatCellHeight,
+                       concatOffsetBottom
+                   }) => {
     const cellStyle = {
         padding: HALF_GAP + 'rem',
         margin: '0',
         border: '0',
     };
-    const cell = ({item, itemIndex}) => {
-        return (
-            <div key={itemIndex} style={cellStyle}>
-                <CellLining item={item} itemIndex={itemIndex}/>
-            </div>
-        )
-    };
-    const CellLining = memo(({item, itemIndex}) => {
-        const ref = useRef(null);
-        console.debug('cell lining')
-        useEffect(() => {
-            if (itemIndex === itemIndexUnderUpdating) {
-                const cellHeight = ref.current.clientHeight;
-                const cellOffsetBottom = ref.current.offsetTop + cellHeight;
-                concatCellHeight(cellHeight);
-                concatOffsetBottom(cellOffsetBottom);
-                // concatCellHeight(36);
-                // concatOffsetBottom((Math.floor(itemIndex / columnNo) + 1) * 36);
-                setItemIndexUnderUpdating(-1);
-            }
-        }, []);
+    const ref = useRef(null);
+    console.debug('render item ' + itemIndex)
+    useEffect(() => {
+        if (itemIndex === itemIndexUnderUpdating) {
+            const cellHeight = ref.current.clientHeight;
+            const cellOffsetBottom = ref.current.offsetTop + cellHeight;
+            concatCellHeight(cellHeight);
+            concatOffsetBottom(cellOffsetBottom);
+            setItemIndexUnderUpdating(-1);
+        }
+    }, []);
 
-        return (
-            <div ref={ref}>
-                <Item item={item}/>
-            </div>
-        )
-    });
-
-    // todo: 这种方式不能用memo了特别慢，每次加一个cell，都得把所有cell全部重新渲染。
-    // map(f)就是一层递归，也就是对Array里的每个元素使用f函数
-    // map(map(f))就是两层递归
-    const assembly = R.compose( // compose的作用就是把下边的函数串联起来
-        table, // 打包一个table
-        idxMp(column), // 打包n个column
-        R.map(R.map(cell)), // 打包n*m个cell，这两层map可以优化成map(compose(a,b))
-        R.map(R.map(getItem)) // 根据index查出对应的对象
-    );
-
-    // 输入matrix是一个n*m维的矩阵，每个元素都是index
     return (
-        <>
-            {
-                assembly(matrix)
-            }
-        </>
+        <div ref={ref} style={cellStyle}>
+            <Item item={item}/>
+        </div>
     );
 }, (prev, next) => {
-    return prev.matrix === next.matrix && prev.columnWidth === next.columnWidth
+    return prev.itemIndex === next.itemIndex
 });
 
-export default MasonryLayout;
+export default Table;

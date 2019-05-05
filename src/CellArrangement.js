@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useCallback} from 'react';
 import PropTypes from "prop-types";
 import CellArrangementDS from "./CellArrangementDS";
-import MasonryLayout from "./MasonryLayout";
+import Table from "./MasonryLayout";
 
 const MIN_COLUMN_NO = 1; // 最少这么多列
 export const HALF_GAP = 0.8; // rem
@@ -30,7 +30,7 @@ const CellArrangement = ({items, fs, wiw}) => {
     // 最主要的输出值，layout矩阵，后边的MasonryLayout就是根据这个布局的
     const [matrix, setMatrix] = useState(cnds.itemIndexMatrix);
 
-    const getItem = useCallback(itemIndex => ({item: items[itemIndex], itemIndex: itemIndex}), [items]); //useRef 报错
+    const getItem = useCallback(itemIndex => items[itemIndex], [items]); //useRef 报错
     const concatCellHeight = useCallback(cwds.concatCellHeight, [cwds]);
     const concatOffsetBottom = useCallback(cnds.concatOffsetBottom, [cnds]);
 
@@ -83,7 +83,7 @@ const CellArrangement = ({items, fs, wiw}) => {
     }, [il]);
 
     return (
-        <MasonryLayout matrix={matrix} columnWidth={columnWidth}
+        <Table matrix={matrix} columnWidth={columnWidth}
                        getItem={getItem}
                        concatCellHeight={concatCellHeight}
                        concatOffsetBottom={concatOffsetBottom}
