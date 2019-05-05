@@ -6,6 +6,8 @@ import Table from "./MasonryLayout";
 const MIN_COLUMN_NO = 1; // 最少这么多列
 export const HALF_GAP = 0.8; // rem
 // 正在更新的item的index，只有判断自己是这个item的时候，才会更新height和offsetBottom
+// 放在Component外边，而不是放在state里的原因是，这个值不涉及render，
+// 如果放到state里还需要用memo之类的躲开，比较麻烦
 export let itemIndexUnderUpdating = -1;
 export const setItemIndexUnderUpdating = (i) => {
     itemIndexUnderUpdating = i;

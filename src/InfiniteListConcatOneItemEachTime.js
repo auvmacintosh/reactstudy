@@ -8,6 +8,9 @@ const controller = new AbortController();
 
 const InfiniteListConcatOneItemEachTime = ({fs, wiw}) => {
     const [items, setItems] = useState([]);
+    const isReachBottom = () =>
+        (window.innerHeight + window.scrollY + 10) >= document.body.clientHeight;
+    let timer = -1;
 
     const windowEventHandler = (e) => {
         e.preventDefault();
@@ -16,7 +19,18 @@ const InfiniteListConcatOneItemEachTime = ({fs, wiw}) => {
                 ifReachBottom(controller.signal);
                 break;
             case 'resize':
-                ifReachBottom(controller.signal);
+                clearInterval(timer);
+                const prevCh = document.body.clientHeight;
+                // 刚刚发生resize放大的时候，document.body.clientHeight还是旧的比较长的值，如果那时候判断
+                // 肯定是没到底，但是等渲染完，clientHeight会变短，因为列多了。所以会发生最后实际已经到底了，
+                // 但判断为没到底的问题，主要就发生在resize的时候。这里设置了一个timer，每10ms检查一次，看看
+                // clientHeight更新了没有，更新了再判断到没到底。
+                timer = setInterval(() => {
+                    if (prevCh !== document.body.clientHeight) {
+                        clearInterval(timer);
+                        ifReachBottom(controller.signal);
+                    }
+                }, 10);
                 break;
             default:
                 throw(new Error('No such handler ' + e.type));
@@ -24,14 +38,12 @@ const InfiniteListConcatOneItemEachTime = ({fs, wiw}) => {
     };
 
     const ifReachBottom = signal => {
-        // todo: 后边的渲染在这个判断后边发生，导致document.body.clientHeight还是旧的比较长的值，
-        // 渲染完最后实际已经到底了，但判断为没到底。
         console.debug('check if reach bottom '
             + (window.innerHeight + window.scrollY + 10) + '  ' + document.body.clientHeight);
         // 需要用>=判断，如果用===判断，页面比窗口短的时候或者有滚动条的时候，就不会触发。
         // 但是用>=有一个问题就是会连续触发，这时候需要先removeEventListener再add上去
         // +n的原因是，这个尺寸的测量值不准，所以必须得留富裕
-        if ((window.innerHeight + window.scrollY + 10) >= document.body.clientHeight) {
+        if (isReachBottom()) {
             console.debug('is reach bottom, should getXs');
             // remove不存在的eventListener不会报错
             ['scroll', 'resize'].forEach(e => window.removeEventListener(e, windowEventHandler));
@@ -60,6 +72,7 @@ const InfiniteListConcatOneItemEachTime = ({fs, wiw}) => {
     };
 
     useEffect(() => {
+        ifReachBottom(controller.signal);
         ['scroll', 'resize'].forEach(e => window.addEventListener(e, windowEventHandler));
         return () => {
             ['scroll', 'resize'].forEach(e => window.removeEventListener(e, windowEventHandler));
@@ -67,13 +80,7 @@ const InfiniteListConcatOneItemEachTime = ({fs, wiw}) => {
         };
     }, []);
 
-    useEffect(() => {
-        ifReachBottom(controller.signal);
-    }, [fs, wiw]);
-
-    return (
-        <CellArrangement items={items} fs={fs} wiw={wiw}/>
-    )
+    return <CellArrangement items={items} fs={fs} wiw={wiw}/>
     // return ( // simplest component, just for test
     //     <>
     //         {items.map((item, idx) =>
