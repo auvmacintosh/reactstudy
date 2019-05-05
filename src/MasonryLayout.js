@@ -79,7 +79,7 @@ const Cell = memo(({
         border: '0',
     };
     const ref = useRef(null);
-    console.debug('render item ' + itemIndex)
+    // console.debug('render item ' + itemIndex)
     useEffect(() => {
         if (itemIndex === itemIndexUnderUpdating) {
             const cellHeight = ref.current.clientHeight;

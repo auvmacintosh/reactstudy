@@ -63,7 +63,7 @@ class ColumnNoDS {
         }); // 空数组返回-1
         return Math.max(...lastCellsItemIndices); // 空矩阵返回-1
     };
-
+    // todo: 重新render之后自动滚动到之前的位置。
     getSmallestItemIndexInViewport = (scrollHeight) => {
         const binarySearchSpecial = (arr, target) => { // binary search default larger变种
             let left = 0;

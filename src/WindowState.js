@@ -34,7 +34,9 @@ const WindowState = () => {
     }, []);
 
     return (
-        <InfiniteListConcatOneItemEachTime fs={fs} wiw={wiw}/>
+        <>
+            <InfiniteListConcatOneItemEachTime fs={fs} wiw={wiw}/>
+        </>
     )
 };
 
