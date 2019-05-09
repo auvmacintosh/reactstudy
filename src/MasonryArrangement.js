@@ -4,7 +4,7 @@ import MasonryDS from "./MasonryDS";
 import Table from "./MasonryLayout";
 
 const MIN_COLUMN_NO = 1; // 最少这么多列
-export const HALF_GAP = 0.8; // rem
+export const HALF_GAP = 1; // rem
 // 正在更新的item的index，只有判断自己是这个item的时候，才会更新height和offsetBottom
 // 放在Component外边，而不是放在state里的原因是，这个值不涉及render，
 // 如果放到state里还需要用memo之类的躲开，比较麻烦
@@ -16,15 +16,17 @@ let ds = new MasonryDS();
 // 当宽度小到一定程度，判断为手机用户，尽量占满屏幕
 const getColumnWidth = (fs, wiw) => {
     const defaultColumnWidth = 20;
+    // todo: 这个算法是对的,但是现在还不能返回不同的列宽,因为下边的bug
     // 58rem大概是900px。小于这个值，列数不变，但是把空白位置占满。
-    if (wiw / fs < 58) {
-        const completeColumnNo = Math.floor((wiw - 2 * HALF_GAP * fs)
-            / (defaultColumnWidth * fs));
-        const defaultColumnNo = Math.max(MIN_COLUMN_NO, completeColumnNo);
-        return (wiw / fs - 2 * HALF_GAP) / defaultColumnNo;
-    } else {
-        return defaultColumnWidth; // rem
-    }
+    // if (wiw / fs < 58) {
+    //     const completeColumnNo = Math.floor((wiw - 2 * HALF_GAP * fs)
+    //         / (defaultColumnWidth * fs));
+    //     const defaultColumnNo = Math.max(MIN_COLUMN_NO, completeColumnNo);
+    //     return (wiw / fs - 2 * HALF_GAP) / defaultColumnNo;
+    // } else {
+    //     return defaultColumnWidth; // rem
+    // }
+    return defaultColumnWidth;
 };
 const getColumnNo = (fs, wiw) => {
     let completeColumnNo = Math.floor((wiw - 2 * HALF_GAP * fs)
@@ -68,11 +70,11 @@ const MasonryArrangement = ({items, fs, wiw}) => {
     // 如果列宽或者列数改变了，就切换matrix
     useEffect(() => {
         // todo: 这段对应cnds改了但cwds没变的情况，如果cwds都改了，需要一个一个渲染过来。
-        console.debug('cnds changed, should set matrix');
+        // console.debug('cnds changed, should set matrix');
         // 如果没有新数据，但是当前cnds.itemIndexMatrix上缺一些items，就把这些items都补上
-        console.debug(lci +'  '+ chl);
+        // console.debug(lci +'  '+ chl);
         if (lci + 1 < chl) {
-            console.debug('this cnds.itemIndexMatrix need to append some old items')
+            // console.debug('this cnds.itemIndexMatrix need to append some old items')
             for (let i = lci + 1; i < chl; i++) {
                 cnds.concatItemIndex(i);
                 cnds.concatOffsetBottom(cnds.getShortestColumnHeight() + cwds.cellHeights[i])
@@ -84,7 +86,7 @@ const MasonryArrangement = ({items, fs, wiw}) => {
     // 如果有一个新数据，只能有一个，如果多个就说明infiniteList这里有错误了。
     useEffect(() => {
         if (il > 0) {
-            console.debug('il changed, should concat the new item ' + (il - 1));
+            // console.debug('il changed, should concat the new item ' + (il - 1));
             setItemIndexUnderUpdating(il - 1);
             cnds.concatItemIndex(il - 1);
             // console.debug(cnds.itemIndexMatrix)

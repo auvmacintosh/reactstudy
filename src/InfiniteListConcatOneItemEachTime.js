@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import getXs, {adaptorSDR} from './utility/getXs'
+import getXs, {adaptorJSONServer} from './utility/getXs'
 import MasonryArrangement from "./MasonryArrangement";
 
 const PAGE_SIZE = 10; // 每次拉到底的page size，本来想第一次刷新多一些，后来发现page no不好算
@@ -9,7 +9,7 @@ const controller = new AbortController();
 const InfiniteListConcatOneItemEachTime = ({fs, wiw}) => {
     const [items, setItems] = useState([]);
     const isReachBottom = () =>
-        (window.innerHeight + window.scrollY + 10) >= document.body.clientHeight;
+        (window.innerHeight + window.scrollY + 100) >= document.body.clientHeight;
     let timer = -1;
 
     const windowEventHandler = (e) => {
@@ -38,18 +38,21 @@ const InfiniteListConcatOneItemEachTime = ({fs, wiw}) => {
     };
 
     const ifReachBottom = signal => {
-        console.debug('check if reach bottom '
-            + (window.innerHeight + window.scrollY + 10) + '  ' + document.body.clientHeight);
+        // console.debug('check if reach bottom '
+        //     + (window.innerHeight + window.scrollY + 10) + '  ' + document.body.clientHeight);
         // 需要用>=判断，如果用===判断，页面比窗口短的时候或者有滚动条的时候，就不会触发。
         // 但是用>=有一个问题就是会连续触发，这时候需要先removeEventListener再add上去
         // +n的原因是，这个尺寸的测量值不准，所以必须得留富裕
         if (isReachBottom()) {
-            console.debug('is reach bottom, should getXs');
+            // console.debug('is reach bottom, should getXs');
             // remove不存在的eventListener不会报错
             ['scroll', 'resize'].forEach(e => window.removeEventListener(e, windowEventHandler));
-            const apiUrl = '/api/articles';
+            const apiUrl = 'http://localhost:3001/posts';
+            // 实际访问的是localhost的tomcat需要在package.json里设置proxy
+            // const apiUrl = '/api/articles';
+
             getXs(apiUrl)(signal, nextPage++, PAGE_SIZE)
-                .then(adaptorSDR(apiUrl))
+                .then(adaptorJSONServer)
                 .then(response => {
                     // 本来想写一个通用的InfiniteList，就是用下边这句代替再下边的for：
                     // setItems(prev => prev.concat(response.xs));
