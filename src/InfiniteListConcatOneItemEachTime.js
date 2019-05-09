@@ -19,6 +19,7 @@ const InfiniteListConcatOneItemEachTime = ({fs, wiw}) => {
                 ifReachBottom(controller.signal);
                 break;
             case 'resize':
+                // todo: 在放大缩小的过程中，可能ifReachBottom先跑了，有竞争，导致某几列特别长，应该是切换布局先跑。
                 clearInterval(timer);
                 const prevCh = document.body.clientHeight;
                 // 刚刚发生resize放大的时候，document.body.clientHeight还是旧的比较长的值，如果那时候判断
@@ -47,7 +48,7 @@ const InfiniteListConcatOneItemEachTime = ({fs, wiw}) => {
             // console.debug('is reach bottom, should getXs');
             // remove不存在的eventListener不会报错
             ['scroll', 'resize'].forEach(e => window.removeEventListener(e, windowEventHandler));
-            const apiUrl = 'http://localhost:3001/posts';
+            const apiUrl = 'https://www.zouren.ml/mockapi/posts';
             // 实际访问的是localhost的tomcat需要在package.json里设置proxy
             // const apiUrl = '/api/articles';
 
