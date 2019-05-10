@@ -1,9 +1,8 @@
-const cacheName = 'v2';
+const cacheName = 'v1';
 
 const cacheAssets = [
     'index.html',
     'favicon.ico'
-
 ];
 
 // Call Install Event
@@ -32,7 +31,7 @@ self.addEventListener('activate', (e) => {
                 cacheNames.map(cache => {
                     if (cache !== cacheName) {
                         console.debug('Service Worker: Clearing Old Caches');
-                        return caches.delete(cache);
+                        // return caches.delete(cache);
                     }
                 })
             )
@@ -62,7 +61,9 @@ self.addEventListener('fetch', e => {
             })
     )
 
-    // fetch(e.request).catch(() => {
-    //     caches.match(e.request)
-    // });
+    // e.respondWith(
+    //     fetch(e.request).catch(() => {
+    //         caches.match(e.request)
+    //     })
+    // )
 });
