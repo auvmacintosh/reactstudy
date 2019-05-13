@@ -44,13 +44,14 @@ const InfiniteListConcatOneItemEachTime = ({fs, wiw}) => {
         // 需要用>=判断，如果用===判断，页面比窗口短的时候或者有滚动条的时候，就不会触发。
         // 但是用>=有一个问题就是会连续触发，这时候需要先removeEventListener再add上去
         // +n的原因是，这个尺寸的测量值不准，所以必须得留富裕
+
         if (isReachBottom()) {
             // console.debug('is reach bottom, should getXs');
             // remove不存在的eventListener不会报错
             ['scroll', 'resize'].forEach(e => window.removeEventListener(e, windowEventHandler));
             const apiUrl = 'https://www.zouren.ml/mockapi/posts';
             // 实际访问的是localhost的tomcat需要在package.json里设置proxy
-            // const apiUrl = '/api/articles';
+            // const apiUrl = '/mockapi/posts';
 
             getXs(apiUrl)(signal, nextPage++, PAGE_SIZE)
                 .then(adaptorJSONServer)
